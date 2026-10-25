@@ -18,6 +18,10 @@
 % Four authors in two rows need more than the style's default 5 cm title box (its own advice:
 % set \titlebox right after loading the style). Not needed for the anonymous submission.
 \ifdefined\taclauthors\setlength\titlebox{6.5cm}\fi
+% Code release: linked only in the versions that show authors (arXiv, camera-ready). The anonymous
+% TACL submission may not link to code, so it only says that everything is released.
+\newcommand{\repourl}{https://github.com/Parv17k/jev-conflict-classifier}
+\ifdefined\taclauthors\newcommand{\releasenote}{ at \url{\repourl}}\else\newcommand{\releasenote}{}\fi
 \usepackage{xspace}
 \xspaceaddexceptions{\% $ ] ) / , ;}   % no space between a generated number and %, $, brackets or punctuation
 \usepackage{booktabs}

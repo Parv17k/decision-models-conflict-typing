@@ -57,6 +57,11 @@ Runs resume, and new outputs go to `runs/`. Hosted models change over time and a
 deterministic (identical requests changed 2–3% of predictions in our runs), so a rerun will not match
 the released outputs exactly; the released outputs are the ones the paper reports.
 
+## License
+
+Code, prompts and model outputs are released under the [Apache License 2.0](LICENSE).
+The CONFLICTS dataset keeps its own licence (below).
+
 ## Data
 
 CONFLICTS is © Google, released under Apache-2.0 at

@@ -2,6 +2,7 @@
 name = "jevconflict"
 version = "0.1.0"
 description = "Typed decision models (Jev, Laya) as conflict-type classifiers on the CONFLICTS benchmark"
+license = "Apache-2.0"
 requires-python = ">=3.10,<3.13"
 dependencies = [
     "numpy>=1.26",
