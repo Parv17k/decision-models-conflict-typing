@@ -1,0 +1,4 @@
+Question: {question}
+Correct answer: {answer}
+
+Give one plausible but incorrect answer to the question, of the same type and format as the correct answer (a different name, place, number or date). Reply with the incorrect answer only.

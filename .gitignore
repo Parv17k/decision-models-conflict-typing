@@ -1,0 +1,32 @@
+# Secrets and local tooling
+.env
+.env.*
+.claude/
+.serena/
+
+# Environments and caches
+.venv
+.venv.nosync/
+__pycache__/
+.pytest_cache/
+
+# Data: fetched by scripts/download_data.sh (Apache-2.0, Google)
+data/conflicts.jsonl
+
+# Runs: per-query outputs are tracked (runs -> runs.nosync); the 35 MB response cache is not
+runs.nosync/api_cache.sqlite
+runs.nosync/_emb_cache/
+
+# Paper build outputs
+paper/*.aux
+paper/*.log
+paper/*.bbl
+paper/*.blg
+paper/*.out
+paper/*.pdf
+paper/main_final.*
+paper/missfont.log
+paper/official/
+
+# arXiv package (built by scripts/make_arxiv.sh)
+arxiv/

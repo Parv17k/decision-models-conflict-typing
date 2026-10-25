@@ -1,0 +1,36 @@
+\section{Prompts and Questions}
+\label{app:prompts}
+
+\paragraph{LLM prompt.} The conflict-type prompt of \citet{cattan2025dragged}, copied from the paper's source with
+only the \LaTeX{} bold markers removed. \texttt{\{search\_results\}} is filled with the numbered results.
+
+\lstinputlisting{generated/paper_prompt.txt}
+
+\paragraph{\jev, flat.} One choice question. Its instruction is the first paragraph of the prompt above; its options
+are the five category definitions with their examples, word for word.
+
+\lstinputlisting{generated/flat_question.txt}
+
+\paragraph{\jev, tree.} Five yes/no questions asked in one request over the same state.
+
+\lstinputlisting{generated/tree_questions.txt}
+
+\paragraph{Planted wrong answers.} Prompt sent to GPT-4.1-mini (temperature 0) to obtain a plausible wrong answer
+for each \emph{No conflict} query whose gold answer appears in a result. The answer is then replaced, as whole words
+and case-insensitively, in the title, snippet and text of one such result chosen with a fixed seed. Queries whose
+gold answer is \emph{yes} or \emph{no} are excluded.
+
+\lstinputlisting{generated/wrong_answer_prompt.txt}
+
+\section{Protocol Record}
+\label{app:protocol}
+
+The development/test split, the prompt and question texts and the combination rules were frozen with recorded file
+hashes before any test-set call. Changes after that point were limited to the following, each logged with its reason
+before results were computed: (1) Gemini~2.5 Flash with thinking added as a sensitivity check; (2) the answer parser
+made lenient for category statements outside the requested JSON, applied to stored answers without new calls (no
+strictly formatted answer changed); (3) Gemini~3.8 Flash added at two thinking levels; (4) the cascade, its
+operating points and its controls; (5) the diagnostics, with one amendment before any planted run: whole-word
+matching and the exclusion of yes/no answers, after substring matching was found to alter unrelated numbers;
+(6) \jev 1.14 and the four other decision models, run with \jev's frozen questions. All runs were reported. Code,
+splits, prompts, cached responses and per-query outputs are released.

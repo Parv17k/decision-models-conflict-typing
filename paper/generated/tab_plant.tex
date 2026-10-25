@@ -1,0 +1,14 @@
+\begin{table*}[t]
+\centering\small
+\fitwidth{\begin{tabular}{lccccc}
+\toprule
+System & Hit & False al. & Youden & Any conflict & AUROC \\
+\midrule
+Jev 1.13, flat & 66.7 & 17.7 & +0.490 & 85.4 / 41.7 & 0.81 \\
+Jev 1.13, tree v2$^\dagger$ & 19.8 & 2.1 & +0.177 & 67.7 / 25.0 & 0.70 \\
+Gemini 3.8 Flash (low) & 52.1 & 3.1 & +0.490 & 71.9 / 25.0 & -- \\
+\bottomrule
+\end{tabular}}
+\caption{One planted false source in 96 \emph{No conflict} test queries (expected label: \emph{Misinformation}). Hit: planted copy labelled Misinformation. False al.: clean copy of the same query labelled Misinformation. Youden = hit $-$ false alarm. Any conflict: planted / clean copy not labelled No conflict. AUROC: P(Misinformation) separating planted from clean copies. $^\dagger$Revised on development data.}
+\label{tab:plant}
+\end{table*}

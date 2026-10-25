@@ -1,0 +1,31 @@
+\section{Experimental Setup}
+\label{sec:setup}
+
+\paragraph{Inputs.} Every system sees the same input. As in \citet{cattan2025dragged}, each search result is the
+concatenation of its URL, title, snippet, publication date (when available) and 512-token segment; results keep the
+dataset's order and are numbered. For \jev they form the state; for the LLMs they fill the paper's prompt.
+
+\paragraph{Decision models.} Our main model is \jev 1.13.0 (\texttt{typesafe-ai/jev-1.13.0}); we report \jev 1.14.0
+as a version-stability check. For context we run the four other decision models served by the same gateway,
+with \jev's questions unchanged and nothing tuned per model: Perplexity decider v1.2, OpenAI GPT-6-luna decisions,
+Liquid d1 and Microsoft decision-1. We did not include the open decision model Laya: its hosted version cannot
+accept the task's question, whose category definitions exceed its input limit, and prior work reports it near
+chance without task-specific training \citep{duan2026general,nandakishore2026laya}.
+
+\paragraph{LLM baselines.} We rerun the paper's best classifier, Gemini~2.5 Flash, with the paper's prompt
+verbatim, temperature 0, thinking off (the paper lists Gemini 2.5 Flash and its thinking variant separately) and,
+as a sensitivity check, thinking on. To compare against a current model we add Gemini~3.8 Flash, the newest Flash
+model available to us, at its lowest thinking level (it cannot be switched off) and at its default. The prompt asks
+for JSON with an explanation and a category number; answers stating the category in another format (\nlenient of \ngemini)
+are parsed leniently rather than counted as errors. All models are reached through one gateway, which reports the
+billed cost of every request; latency is the wall-clock time of the successful request.
+
+\paragraph{Protocol.} Prompts, questions, inputs and the development/test split were frozen before any test-set
+call, with file hashes recorded. The only setting chosen by inspecting data is tree v2, chosen on the development
+split and marked $\dagger$ in all tables. Every later addition (Gemini~3.8 Flash, \jev 1.14, the other decision
+models, the cascade and the diagnostics) was specified in writing before it was run, and every run was reported.
+
+\paragraph{Statistics.} Comparisons are paired on identical queries. We report 95\% bootstrap intervals over queries
+\citep{efron1994bootstrap} (10,000 resamples) and two-sided exact McNemar tests \citep{mcnemar1947} on per-query
+correctness. With \ntest test queries, a 95\% interval on accuracy is about $\pm$\cihalf points wide, so differences
+under about five points are generally not significant; we report them as ties, not as wins.

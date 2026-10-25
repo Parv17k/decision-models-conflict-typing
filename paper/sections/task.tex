@@ -1,0 +1,25 @@
+\section{Task and Data}
+\label{sec:task}
+
+\paragraph{Taxonomy.} We use the taxonomy of \citet{cattan2025dragged}. Given a query and its retrieved sources,
+the conflict is one of: \emph{No conflict} (the sources agree, up to wording or granularity);
+\emph{Complementary information} (the answers differ but can all be correct, e.g.\ because the query is
+underspecified); \emph{Conflicting opinions or research outcomes} (a subjective or contested topic with genuinely
+opposing views); \emph{Outdated information} (a factual question on which sources disagree because the answer
+changed over time); and \emph{Misinformation} (a factual question on which some sources are wrong).
+
+\paragraph{Data.} \conflicts contains \nall queries drawn from five QA datasets
+\citep{wan2024evidence,zhang2021situatedqa,vu2023freshllms,liu2024qacc}, each with the top Google Search results
+(\avgresults on average), the conflict type assigned by expert annotators, and, for the types with a single correct
+answer, that answer. Each result carries a URL, title, snippet, publication date when available, and the
+512-token segment of the page most relevant to the query. The released file has no split. We draw a stratified
+development split of \ndev queries with a fixed seed and use it only to choose settings; the remaining \ntest
+queries form the test split on which we report (Table~\ref{tab:data}). \emph{Misinformation} has only five
+instances in the whole dataset, a limitation we return to in \S\ref{sec:diagnostics} by constructing a planted
+variant.
+
+\input{generated/tab_data}
+
+\paragraph{Metric.} Following \citet{cattan2025dragged}, the primary metric is five-class accuracy. We also report
+macro-F1 (the classes are imbalanced), per-class F1, and, for systems that return probabilities, expected
+calibration error \citep[ECE;][]{guo2017calibration} of the top-class probability.

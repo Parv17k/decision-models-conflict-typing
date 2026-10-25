@@ -1,0 +1,24 @@
+\begin{table*}[t]
+\centering\small
+\fitwidth{\begin{tabular}{lccccc}
+\toprule
+System & Accuracy [95\% CI] & Macro-F1 & ECE & \$ / 1k queries & Latency (s) \\
+\midrule
+\multicolumn{6}{l}{\emph{Decision model (one forward pass)}} \\
+\quad Jev 1.13, flat & 61.8 [56.9, 66.5] & 54.9 & 0.103 & 0.19 & 0.26 \\
+\quad Jev 1.13, tree v1 & 47.3 [42.4, 52.0] & 29.3 & 0.153 & 0.18 & 0.25 \\
+\quad Jev 1.13, tree v2$^\dagger$ & 63.5 [58.9, 68.2] & 45.9 & 0.026 & 0.18 & 0.25 \\
+\quad Jev 1.14, flat & 59.6 [54.7, 64.5] & 53.3 & 0.113 & 0.19 & 0.28 \\
+\quad Jev 1.14, tree v2$^\dagger$ & 62.8 [58.1, 67.5] & 45.7 & 0.031 & 0.18 & 0.27 \\
+\multicolumn{6}{l}{\emph{Generative LLM, paper's prompt}} \\
+\quad Gemini 2.5 Flash, thinking off & 61.3 [56.7, 66.0] & 53.1 & -- & 1.66 & 1.55 \\
+\quad Gemini 2.5 Flash, thinking on & 57.9 [53.0, 62.8] & 51.4 & -- & 6.04 & 9.57 \\
+\quad Gemini 3.8 Flash, thinking low & 70.0 [65.5, 74.4] & 61.3 & -- & 3.65 & 2.18 \\
+\quad Gemini 3.8 Flash, default thinking & 66.7 [62.1, 71.2] & 59.4 & -- & 5.51 & 5.01 \\
+\midrule
+\quad Gemini 2.5 Flash, as published$^\ddagger$ & 65.3 & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}}
+\caption{Conflict-type classification on the CONFLICTS test split ($n=406$), five classes. All systems see identical inputs; the LLMs receive the paper's prompt verbatim and Jev's \emph{flat} question carries the same instructions, definitions and examples. Cost is billed cost through one gateway; latency is the mean per query. ECE is undefined for hard-label systems. $^\dagger$Combination order revised on the development split (\S\ref{sec:formulation}). $^\ddagger$Reported by \citet{cattan2025dragged} on all 458 queries; not comparable query by query.}
+\label{tab:main}
+\end{table*}

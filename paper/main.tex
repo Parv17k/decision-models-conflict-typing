@@ -1,0 +1,82 @@
+% Target: Transactions of the ACL (TACL), regular paper (10 pages + references + appendix).
+% Every result is generated: tables are \input from generated/, numbers are macros from
+% generated/numbers.tex. Rebuild them with `.venv/bin/python scripts/make_tables.py`.
+% Build: cd paper && pdflatex main && bibtex main && pdflatex main && pdflatex main
+\documentclass[11pt,a4paper]{article}
+\usepackage{times,latexsym}
+\usepackage{url}
+\makeatletter\g@addto@macro{\UrlBreaks}{\UrlOrds}\makeatother   % let long URLs break anywhere
+\usepackage[T1]{fontenc}
+\renewcommand{\ttdefault}{lmtt}   % Latin Modern mono: no dependency on the Courier fonts
+% Three builds from this one source (see README.md):
+%   TACL submission (default): anonymous, line-numbered, "Confidential" header.
+%   Camera-ready preview:  pdflatex -jobname=main_final "\def\taclfinal{}\input{main}"
+%   arXiv preprint:        scripts/make_arxiv.sh  (authors shown, no line numbers or header)
+\ifdefined\taclfinal\def\taclauthors{}\fi
+\ifdefined\arxivversion\def\taclauthors{}\fi
+\ifdefined\taclauthors\usepackage[acceptedWithA]{tacl2021v1}\else\usepackage{tacl2021v1}\fi
+% Four authors in two rows need more than the style's default 5 cm title box (its own advice:
+% set \titlebox right after loading the style). Not needed for the anonymous submission.
+\ifdefined\taclauthors\setlength\titlebox{6.5cm}\fi
+\usepackage{xspace}
+\xspaceaddexceptions{\% $ ] ) / , ;}   % no space between a generated number and %, $, brackets or punctuation
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{listings}
+
+\lstset{basicstyle=\scriptsize\ttfamily,breaklines=true,breakatwhitespace=true,columns=fullflexible,
+        frame=single,framerule=0.4pt,rulecolor=\color{gray},xleftmargin=2pt,xrightmargin=2pt}
+% Shrink a table to the line width only if it is wider (graphicx only; no adjustbox in BasicTeX).
+\newsavebox{\fitbox}
+\newcommand{\fitwidth}[1]{\sbox{\fitbox}{#1}\ifdim\wd\fitbox>\linewidth\typeout{FITWIDTH scaled \the\wd\fitbox\space to \the\linewidth}\resizebox{\linewidth}{!}{\usebox{\fitbox}}\else\usebox{\fitbox}\fi}
+\newcommand{\todo}[1]{\textcolor{orange!80!black}{[TODO: #1]}}
+\newcommand{\jev}{Jev\xspace}
+\newcommand{\conflicts}{\textsc{Conflicts}\xspace}
+
+\input{generated/numbers}
+
+\title{Fast Judgments on Conflicting Sources: The Typed Decision Model Jev\\
+as a Knowledge-Conflict Classifier for Retrieval-Augmented Generation}
+
+% TACL author block, Option 1 (address under each name), three per row. Author order: Parv Khatri
+% (first and lead author), Harshul Jain, Tanmay Sah, Mehak Kapoor, Tanya Sah. Emails for Tanmay Sah
+% and Tanya Sah still to be filled in.
+\author{
+  Parv Khatri \\ Independent Researcher \\ \texttt{khatriparv@gmail.com}
+  \And
+  Harshul Jain \\ Independent Researcher \\ \texttt{harshuljain1393@gmail.com}
+  \And
+  Tanmay Sah \\ Independent Researcher \\ \texttt{\todo{email}}
+  \AND
+  Mehak Kapoor \\ Independent Researcher \\ \texttt{mehakkapoor9873@gmail.com}
+  \And
+  Tanya Sah \\ Independent Researcher \\ \texttt{\todo{email}}
+}
+
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
+
+\input{sections/introduction}
+\input{sections/related}
+\input{sections/task}
+\input{sections/method}
+\input{sections/setup}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+\bibliography{refs}
+\bibliographystyle{acl_natbib}
+
+\appendix
+\input{sections/appendix}
+
+\end{document}

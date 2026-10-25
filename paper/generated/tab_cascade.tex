@@ -1,0 +1,26 @@
+\begin{table*}[t]
+\centering\small
+\fitwidth{\begin{tabular}{lcccccc}
+\toprule
+$f$ & Acc. & Random & $\Delta$ vs LLM [95\% CI] & $p$ & Cost & Lat.\ (s) \\
+\midrule
+\multicolumn{7}{l}{\emph{Cheap stage: Jev 1.13, flat} (AUROC of confidence 0.70)} \\
+\quad 0\% & 61.8 & 61.8 & $-$8.1 [$-$12.3, $-$3.9] & {<}0.001 & 5\% & 0.26 \\
+\quad 10\% & 66.3 & 62.6 & $-$3.7 [$-$7.4, +0.0] & 0.07 & 16\% & 0.47 \\
+\quad 25\% & 68.5 & 63.9 & $-$1.5 [$-$4.4, +1.5] & 0.41 & 30\% & 0.81 \\
+\quad 50\% & 69.2 & 65.9 & $-$0.7 [$-$2.7, +1.0] & 0.61 & 54\% & 1.34 \\
+\multicolumn{7}{l}{\emph{Cheap stage: Jev 1.13, tree v2$^\dagger$} (AUROC of confidence 0.73)} \\
+\quad 0\% & 63.5 & 63.5 & $-$6.4 [$-$11.6, $-$1.5] & 0.02 & 5\% & 0.25 \\
+\quad 10\% & 65.0 & 64.2 & $-$4.9 [$-$9.6, $-$0.2] & 0.05 & 15\% & 0.48 \\
+\quad 25\% & 68.5 & 65.2 & $-$1.5 [$-$5.4, +2.5] & 0.54 & 29\% & 0.81 \\
+\quad 50\% & 71.4 & 66.7 & +1.5 [$-$0.7, +3.9] & 0.31 & 54\% & 1.33 \\
+\multicolumn{7}{l}{\emph{Cheap stage: Jev 1.14, flat} (AUROC of confidence 0.70)} \\
+\quad 0\% & 59.6 & 59.6 & $-$10.3 [$-$14.8, $-$5.9] & {<}0.001 & 5\% & 0.28 \\
+\quad 10\% & 64.0 & 60.7 & $-$5.9 [$-$9.9, $-$2.0] & 0.004 & 15\% & 0.49 \\
+\quad 25\% & 65.8 & 62.2 & $-$4.2 [$-$7.4, $-$1.0] & 0.02 & 30\% & 0.82 \\
+\quad 50\% & 68.7 & 64.8 & $-$1.2 [$-$3.4, +1.0] & 0.36 & 54\% & 1.36 \\
+\bottomrule
+\end{tabular}}
+\caption{Confidence-gated cascade: the fraction $f$ of queries with the lowest Jev top probability goes to Gemini 3.8 Flash (thinking low; 70.0\% alone). \emph{Random}: expected accuracy when the same number of queries is escalated at random. Cost is relative to the LLM alone. Thresholds are label-free quantiles, fixed before computing. $^\dagger$Revised on development data.}
+\label{tab:cascade}
+\end{table*}

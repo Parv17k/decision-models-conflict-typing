@@ -1,0 +1,5 @@
+differ (yes/no): Beyond superficial differences in wording, detail or granularity, do the search results give different answers to the query?
+compatible (yes/no): Could all the different answers in the search results be correct at the same time, for example because the query is underspecified or allows several valid answers?
+opinion (yes/no): Is the query a subjective or contentious topic on which the search results present opposing viewpoints or contradictory research findings?
+outdated (yes/no): Does the query have a verifiable factual answer on which the search results disagree because the answer changed over time, so some results are outdated?
+misinformation (yes/no): Does the query have a verifiable factual answer on which some of the search results are factually incorrect or misleading?

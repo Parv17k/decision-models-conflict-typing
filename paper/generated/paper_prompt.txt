@@ -1,0 +1,33 @@
+You are tasked with analyzing the search results provided for a given query and classifying the type of knowledge conflict present (if any).
+Consider the query and the search results carefully, then classify the conflict into *one* of the following categories, using the descriptions and examples provided below.
+
+1. No Conflict: The search results refer to the same concept and are in agreement. Differences are superficial, such as variations in detail or granularity.
+    *   *Example:*
+        *   *Query:* What is the meaning of the name Apoorva?
+        *   *Search Results:* Unique, Quite new, Not seen before
+2.  Complementary Information: The question is underspecified or allows for multiple valid perspectives or answers that do not contradict each other. All provided answers can be considered correct.
+    *   *Example:*
+        *   *Query:* Is public transportation faster than driving in cities?
+        *   *Search Results:* Depends on the city and situation (e.g., rush hour vs. off-peak), specific routes matter, availability of parking is relevant.
+3.  Conflicting Opinions or Research Outcomes: The query addresses a subjective or contentious topic, leading to genuinely opposing viewpoints or contradictory research findings.
+    *   *Example:*
+        *   *Query:* Is online learning as effective as traditional classroom learning?
+        *   *Search Results:* Some sources argue "yes," citing flexibility and accessibility. Others argue "no," emphasizing the importance of in-person interaction.
+4.  Conflict Due to Outdated Information: The question has a verifiable factual answer, but the search results contain conflicting information due to changes over time.
+    *   *Example:*
+        *   *Query:* Do Tesla and X Corp. have the same CEO?
+        *   *Search Results:* Some articles say yes (dated before the change), others say no (dated after the change).
+5.  Conflict Due to Misinformation: The question has a verifiable factual answer, but some of the search results contain factually incorrect or misleading information.
+    *   *Example:*
+        *   *Query:* What is the capital of Israel?
+        *   *Search Results:* One source correctly states Jerusalem, while another incorrectly states Tel Aviv.
+
+
+Input:
+*   QUERY: {query}
+*   SEARCH RESULTS: {search_results}
+
+Output:
+Please provide your response as a JSON object with the following fields:
+*   explanation: (String) A brief explanation of why you chose this category.
+*   category: (Integer) The number (1-5) corresponding to the category of the knowledge conflict.

@@ -1,0 +1,4 @@
+type: choice
+instructions: You are tasked with analyzing the search results provided for a given query and classifying the type of knowledge conflict present (if any).
+Consider the query and the search results carefully, then classify the conflict into *one* of the following categories, using the descriptions and examples provided below.
+options: the five category definitions of the prompt above, each with its example, keyed no_conflict, complementary, conflicting_opinions, outdated, misinformation

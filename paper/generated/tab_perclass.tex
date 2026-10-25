@@ -1,0 +1,16 @@
+\begin{table*}[t]
+\centering\small
+\fitwidth{\begin{tabular}{lccccc}
+\toprule
+F1 & NC (143) & Comp.\ (102) & Opin.\ (102) & Outd.\ (55) & Misinf.\ (4) \\
+\midrule
+Jev 1.13, flat & 64.0 & 62.7 & 72.5 & 65.0 & 10.2 \\
+Jev 1.13, tree v1 & 71.2 & 47.8 & 3.8 & 10.2 & 13.3 \\
+Jev 1.13, tree v2$^\dagger$ & 69.5 & 54.9 & 74.3 & 31.0 & 0.0 \\
+Gemini 2.5 Flash (off) & 60.9 & 59.7 & 76.2 & 59.0 & 9.8 \\
+Gemini 3.8 Flash (low) & 71.8 & 68.3 & 75.1 & 66.1 & 25.0 \\
+\bottomrule
+\end{tabular}}
+\caption{Per-class F1 on the test split (support in parentheses). Tree v1 almost never predicts \emph{Conflicting opinions}; flat Jev is strongest on \emph{Outdated}. $^\dagger$Revised on development data.}
+\label{tab:perclass}
+\end{table*}

@@ -1,0 +1,53 @@
+\section{Introduction}
+\label{sec:intro}
+
+Search-augmented language models answer from retrieved web pages, and those pages often disagree. The
+disagreement can have very different causes. A question may be underspecified and admit several correct answers;
+it may touch a contested topic on which reasonable sources differ; the answer may have changed over time, so some
+pages are stale; or a page may simply be wrong. Each case calls for a different response: combine the answers,
+present the viewpoints neutrally, prefer the most recent information, or ignore the unreliable source.
+\citet{cattan2025dragged} formalised this as a five-way taxonomy, released \conflicts, a benchmark of 458 search
+queries annotated by experts with their conflict type, and showed that giving a generator the gold type raises
+the share of responses with the expected behaviour by about 24 points. The bottleneck is the type itself: the best
+LLM they tested, Gemini~2.5 Flash, predicted it with 65.3\% accuracy.
+
+Conflict typing is a decision, not a generation task. It is made once per query, before the answer is written, and
+its output is one of five labels. A classifier for it should therefore be fast enough to sit in front of every
+search-augmented request, cheap enough to run on all of them, and calibrated enough that its uncertainty can be
+acted on. These are exactly the properties claimed for a new class of \emph{typed decision models}, which take
+unstructured context and typed questions and return probabilities over the allowed answers in a single forward
+pass, without generating text \citep{typesafe2026jev}. \jev, the first such model, has been evaluated broadly on
+classification, NLI and judging benchmarks \citep{deusser2026jev,li2026specialized,duan2026general}, but never on
+deciding why retrieved sources conflict, a task that requires reading many documents at once and reasoning about
+their mutual relation rather than about one text.
+
+We ask whether \jev can serve as this decision layer. We make four contributions.
+
+\paragraph{(1) A faithful evaluation of \jev on conflict typing.} We evaluate \jev on \conflicts under the
+original paper's protocol: the same input representation, the same category definitions and examples taken
+verbatim from the paper's source, and Gemini rerun on identical inputs so that every comparison is paired. Asked
+directly, \jev is statistically tied with the paper's model, Gemini~2.5 Flash (\jevacc\% vs.\ \gtwofiveacc\%), at
+\costratiotwofive$\times$ lower cost and \latratiotwofive$\times$ lower latency (\S\ref{sec:main}). It trails the
+current Gemini~3.8 Flash by \jevvsthreeeightdiffabs points, and among five decision models it is mid-pack in
+accuracy and the fastest.
+
+\paragraph{(2) A formulation study.} Decision models invite decomposing a taxonomy into simple yes/no questions.
+We find that this fails for conflict typing (\treeoneacc\%) because \jev answers \emph{yes} too readily; a
+reordered tree chosen on development data repairs it for \jev but does not transfer to other decision models,
+leaving the direct question as the robust format (\S\ref{sec:formulation}).
+
+\paragraph{(3) A cost-quality cascade.} Because \jev's confidence predicts its own errors, sending its least
+certain queries to an LLM is effective: escalating a quarter of the queries to Gemini~3.8 Flash reaches
+\cascflattfacc\% against the LLM's \gthreeeightacc\% ($p\cascflattfp$) at \cascflattfcost\% of the LLM's cost
+(\S\ref{sec:cascade}).
+
+\paragraph{(4) Pre-specified diagnostics.} We test three hypotheses about how \jev reads conflicting sources
+(\S\ref{sec:diagnostics}). \jev's documented weakness at ordering dates \citep{typesafe2026jagged} does not affect
+this task: no system's accuracy changes when dates are removed or when recency is computed in code, and \jev
+recognises outdated sources from their content as well as the LLM does. \jev is as sensitive to source order as
+the LLM, and when one source is rewritten to contradict the others, it separates the corrupted from the clean
+version of a query exactly as well as Gemini~3.8 Flash.
+
+Every setting was fixed on a development split before the test runs, and every later addition (a newer LLM, a
+newer \jev version, other decision models, the diagnostics) was specified in writing before it was run. We release
+the code, prompts, splits and all model outputs.

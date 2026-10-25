@@ -1,0 +1,20 @@
+\begin{table*}[t]
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\fitwidth{\begin{tabular}{lccccccccc}
+\toprule
+ & \multicolumn{3}{c}{Jev flat} & \multicolumn{3}{c}{Jev tree v2$^\dagger$} & \multicolumn{3}{c}{Gemini 3.8} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+Perturbation & $\Delta$Acc ($p$) & Flip & Outd. & $\Delta$Acc ($p$) & Flip & Outd. & $\Delta$Acc ($p$) & Flip & Outd. \\
+\midrule
+Rerun & $-$0.5 (0.69) & 2.0 & 74.5 & $-$0.2 (1.00) & 2.5 & 20.0 & +1.2 (0.27) & 3.4 & 72.7 \\
+No dates & $-$1.0 (0.34) & 3.0 & 74.5 & +0.0 (1.00) & 3.4 & 20.0 & $-$0.7 (0.51) & 2.7 & 67.3 \\
+Recency in code & +0.2 (1.00) & 3.4 & 76.4 & +0.2 (1.00) & 3.7 & 21.8 & $-$0.7 (0.65) & 5.7 & 72.7 \\
+Shuffle, seed 1 & +1.5 (0.38) & 11.1 & 72.7 & $-$1.5 (0.33) & 9.9 & 18.2 & $-$0.5 (0.85) & 8.4 & 74.5 \\
+Shuffle, seed 2 & +0.2 (1.00) & 12.1 & 67.3 & $-$2.2 (0.11) & 8.4 & 18.2 & $-$2.7 (0.09) & 10.3 & 70.9 \\
+\midrule
+Original Outd.\ recall & \multicolumn{3}{c}{72.7} & \multicolumn{3}{c}{20.0} & \multicolumn{3}{c}{69.1} \\
+\bottomrule
+\end{tabular}}
+\caption{Diagnostics on the test split. Each perturbed run is compared with the same system's original run. $\Delta$Acc: accuracy change in points (exact McNemar $p$). Flip: share of queries whose predicted type changed (\%). Outd.: recall (\%) on the 55 \emph{Outdated} queries after the perturbation. The identical rerun is the noise floor. $^\dagger$Revised on development data.}
+\label{tab:diagnostics}
+\end{table*}

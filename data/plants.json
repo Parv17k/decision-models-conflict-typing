@@ -1,0 +1,572 @@
+{
+ "6": {
+  "answer": "Kevin Spacey",
+  "wrong": "Bobby Darin",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "8": {
+  "answer": "Aram Shah",
+  "wrong": "Iltutmish",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "11": {
+  "answer": "Missouri River",
+  "wrong": "Mississippi River",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "14": {
+  "answer": "Abi Carter",
+  "wrong": "James Smith",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "16": {
+  "answer": "Vatican City",
+  "wrong": "San Marino",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "20": {
+  "answer": "Bryan Cranston",
+  "wrong": "John Goodman",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "24": {
+  "answer": "Stem",
+  "wrong": "Root",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "27": {
+  "answer": "Prairie provinces",
+  "wrong": "Atlantic provinces",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "29": {
+  "answer": "March 24, 2017",
+  "wrong": "April 15, 2018",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "34": {
+  "answer": "Maharashtra",
+  "wrong": "Karnataka",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "37": {
+  "answer": "1850",
+  "wrong": "1845",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "39": {
+  "answer": "10",
+  "wrong": "8",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "46": {
+  "answer": "Never Flinch",
+  "wrong": "Billy Summers",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "48": {
+  "answer": "1901",
+  "wrong": "1895",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "52": {
+  "answer": "0",
+  "wrong": "1",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "54": {
+  "answer": "27",
+  "wrong": "23",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "57": {
+  "answer": "Jack Nicklaus",
+  "wrong": "Tiger Woods",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "59": {
+  "answer": "John G. Roberts, Jr.",
+  "wrong": "Clarence Thomas",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "65": {
+  "answer": "1,492",
+  "wrong": "1,350",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "68": {
+  "answer": "Caren Marsh Doll",
+  "wrong": "Norman Lloyd",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "70": {
+  "answer": "Adam Smith",
+  "wrong": "David Ricardo",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "78": {
+  "answer": "21",
+  "wrong": "18",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "79": {
+  "answer": "1978",
+  "wrong": "1982",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "85": {
+  "answer": "Caitlin Clark",
+  "wrong": "Lionel Messi",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "96": {
+  "answer": "Billy Donovan",
+  "wrong": "Fred Hoiberg",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "100": {
+  "answer": "$15.49 per month",
+  "wrong": "$12.99 per month",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "101": {
+  "answer": "August 15, 1972",
+  "wrong": "January 1, 1965",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "102": {
+  "answer": "Dina Boluarte",
+  "wrong": "Keiko Fujimori",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "108": {
+  "answer": "Arizona",
+  "wrong": "New York",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "110": {
+  "answer": "1769",
+  "wrong": "1886",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "113": {
+  "answer": "April 12, 1861",
+  "wrong": "July 4, 1776",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "118": {
+  "answer": "Afghanistan",
+  "wrong": "Bhutan",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "120": {
+  "answer": "Baby Shark Dance",
+  "wrong": "Despacito",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "125": {
+  "answer": "No",
+  "wrong": "Yes",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "128": {
+  "answer": "KOMO",
+  "wrong": "KING",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "133": {
+  "answer": "Russia",
+  "wrong": "Germany",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "134": {
+  "answer": "22",
+  "wrong": "20",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "135": {
+  "answer": "Bullet Train",
+  "wrong": "Once Upon a Time in Hollywood",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "136": {
+  "answer": "5",
+  "wrong": "4",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "138": {
+  "answer": "1",
+  "wrong": "2",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "140": {
+  "answer": "Sri Aurobindo Ghosh",
+  "wrong": "Rabindranath Tagore",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "144": {
+  "answer": "the first Sunday of November",
+  "wrong": "the last Sunday of October",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "146": {
+  "answer": "$2.5 million",
+  "wrong": "$10 million",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "149": {
+  "answer": "France",
+  "wrong": "United States",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "152": {
+  "answer": "4",
+  "wrong": "3",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "160": {
+  "answer": "Yes",
+  "wrong": "No",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "165": {
+  "answer": "Hamburg",
+  "wrong": "Munich",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "166": {
+  "answer": "Yes",
+  "wrong": "No",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "169": {
+  "answer": "Javier A. Reyes",
+  "wrong": "Kumble R. Subbaswamy",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "170": {
+  "answer": "California",
+  "wrong": "Texas",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "173": {
+  "answer": "Linda Yaccarino",
+  "wrong": "Elon Musk",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "175": {
+  "answer": "Lionel Messi",
+  "wrong": "Cristiano Ronaldo",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "179": {
+  "answer": "Cristiano Ronaldo",
+  "wrong": "Lionel Messi",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "183": {
+  "answer": "Vishrava",
+  "wrong": "Pulastya",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "185": {
+  "answer": "Montreal Canadiens",
+  "wrong": "Toronto Maple Leafs",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "211": {
+  "answer": "The Boy and the Heron",
+  "wrong": "How Do You Live?",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "212": {
+  "answer": "Yes",
+  "wrong": "No",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "213": {
+  "answer": "The Anglo-Zanzibar War",
+  "wrong": "The Six-Day War",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "214": {
+  "answer": "No",
+  "wrong": "Yes",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "219": {
+  "answer": "Keir Starmer",
+  "wrong": "Rishi Sunak",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "229": {
+  "answer": "No",
+  "wrong": "Yes",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "235": {
+  "answer": "Franklin D. Roosevelt",
+  "wrong": "Herbert Hoover",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "237": {
+  "answer": "MrBeast",
+  "wrong": "PewDiePie",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "238": {
+  "answer": "Bath, United Kingdom",
+  "wrong": "Tokyo, Japan",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "268": {
+  "answer": "George W. Bush",
+  "wrong": "Barack Obama",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "270": {
+  "answer": "6",
+  "wrong": "5",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "271": {
+  "answer": "Yes",
+  "wrong": "No",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "277": {
+  "answer": "Mughal Emperor Jahangir",
+  "wrong": "Mughal Emperor Akbar",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "283": {
+  "answer": "Mati",
+  "wrong": "Kakos matias",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "284": {
+  "answer": "$5-$10",
+  "wrong": "$15-$20",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "286": {
+  "answer": "No",
+  "wrong": "Yes",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "288": {
+  "answer": "The Ruia family",
+  "wrong": "The Ambani family",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "289": {
+  "answer": "Yes",
+  "wrong": "No",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "291": {
+  "answer": "Mithali Raj",
+  "wrong": "Harmanpreet Kaur",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "293": {
+  "answer": "O+",
+  "wrong": "A+",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "295": {
+  "answer": "New York",
+  "wrong": "Los Angeles",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "298": {
+  "answer": "John F. Kennedy",
+  "wrong": "Joe Biden",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "302": {
+  "answer": "Liz Truss",
+  "wrong": "George Canning",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "312": {
+  "answer": "Michael Phelps",
+  "wrong": "Usain Bolt",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "315": {
+  "answer": "Yes",
+  "wrong": "No",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "319": {
+  "answer": "Yes",
+  "wrong": "No",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "320": {
+  "answer": "No",
+  "wrong": "Yes",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "323": {
+  "answer": "Han Kang",
+  "wrong": "Haruki Murakami",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "324": {
+  "answer": "No",
+  "wrong": "Yes",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "330": {
+  "answer": "African Americans",
+  "wrong": "Hispanic Americans",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "334": {
+  "answer": "Andrea Riseborough",
+  "wrong": "Emma Stone",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "336": {
+  "answer": "October 30, 1918",
+  "wrong": "November 11, 1918",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "342": {
+  "answer": "No",
+  "wrong": "Yes",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "344": {
+  "answer": "James W. Marshall",
+  "wrong": "John Sutter",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "348": {
+  "answer": "6",
+  "wrong": "4",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "349": {
+  "answer": "2024",
+  "wrong": "2020",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "350": {
+  "answer": "Karim Benzema",
+  "wrong": "Zinedine Zidane",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "356": {
+  "answer": "Rafael Nadal",
+  "wrong": "Roger Federer",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "366": {
+  "answer": "China",
+  "wrong": "United States",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "372": {
+  "answer": "56 delegates to the Continental Congress",
+  "wrong": "42 delegates to the Continental Congress",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "373": {
+  "answer": "South Sea",
+  "wrong": "Mediterranean Sea",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "374": {
+  "answer": "No",
+  "wrong": "Yes",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "376": {
+  "answer": "10",
+  "wrong": "9",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "382": {
+  "answer": "52",
+  "wrong": "47",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "388": {
+  "answer": "Max Verstappen",
+  "wrong": "Lewis Hamilton",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "391": {
+  "answer": "USA",
+  "wrong": "Spain",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "399": {
+  "answer": "No",
+  "wrong": "Yes",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "400": {
+  "answer": "none",
+  "wrong": "two",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "408": {
+  "answer": "No",
+  "wrong": "Yes",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "413": {
+  "answer": "Warren Hastings",
+  "wrong": "Lord Cornwallis",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "417": {
+  "answer": "The Beatles",
+  "wrong": "The Rolling Stones",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "419": {
+  "answer": "Gurbachan Singh Randhawa",
+  "wrong": "Milkha Singh",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "423": {
+  "answer": "2015",
+  "wrong": "2017",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "424": {
+  "answer": "Iskander Mirza",
+  "wrong": "Liaquat Ali Khan",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "425": {
+  "answer": "Indo-Greeks",
+  "wrong": "Maurya Empire",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "428": {
+  "answer": "April 10, 1912",
+  "wrong": "April 15, 1912",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "429": {
+  "answer": "Mario",
+  "wrong": "Pok\u00e9mon",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "441": {
+  "answer": "Yes",
+  "wrong": "No",
+  "model": "openai/gpt-4.1-mini"
+ },
+ "446": {
+  "answer": "Shigeru Ishiba",
+  "wrong": "Fumio Kishida",
+  "model": "openai/gpt-4.1-mini"
+ }
+}

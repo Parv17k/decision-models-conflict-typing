@@ -1,0 +1,33 @@
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Knowledge conflicts in retrieval-augmented generation.}
+\citet{xu2024knowledge} survey conflicts between a model's parametric knowledge and its context, among retrieved
+contexts, and within the model's memory. Work on inter-context conflicts has largely studied one cause at a time,
+such as substituted entities \citep{longpre2021entity}, contradictions in Wikipedia \citep{hou2024wikicontradict},
+contested questions \citep{wan2024evidence}, temporal or geographic context \citep{zhang2021situatedqa}, freshness
+\citep{vu2023freshllms} or conflicting contexts in open-domain QA \citep{liu2024qacc}. \citet{cattan2025dragged}
+unify these causes into a taxonomy with expected behaviours and release \conflicts, the first benchmark annotated
+with the conflict type; we build directly on it. Methods for resolving conflicts include multi-agent debate over
+documents \citep{wang2025madam}, reasoning traces learned by fine-tuning \citep{mishra2025facts}, and a two-stage
+detector that sends an embedding classifier's uncertain cases to an LLM \citep{wang2026conflictrag}. None of these
+uses a typed decision model.
+
+\paragraph{Typed decision models.}
+\jev \citep{typesafe2026jev} answers typed questions (choice, score, yes/no) over a supplied state with
+probabilities over the allowed answers, trained for calibration rather than generation. Independent evaluations
+find it competitive with frontier LLMs on knowledge, classification and NLI benchmarks at a fraction of the cost
+\citep{deusser2026jev,li2026specialized}, well calibrated on choice questions but biased towards \emph{yes} when
+many yes/no questions share a request \citep{deusser2026jev,li2026llm2jev}, not always coherent across logically
+related questions \citep{li2026beyond}, weaker as inputs grow long \citep{duan2026general}, and vulnerable to
+natural-looking context that flips its decisions \citep{xu2026jevout}. As a judge, it is cheaper than LLMs but
+shares their most confident errors \citep{rao2026rubric}, and a confidence-gated cascade to an LLM can match the
+LLM at lower cost \citep{li2026jevjudge}. Closest to our setting, \citet{huang2026radiology} use \jev to decide
+whether one report supports or contradicts another. No prior work evaluates a decision model on typing the
+conflict among many retrieved sources.
+
+\paragraph{Cascades and selective prediction.}
+Routing easy inputs to a cheap model and hard ones to an expensive model is an established way to trade cost for
+quality \citep{chen2023frugalgpt}; its effectiveness depends on how well the cheap model's confidence ranks its own
+errors, the quantity studied in selective classification \citep{geifman2017selective}. We measure this directly
+for \jev on conflict typing and compare against random escalation.

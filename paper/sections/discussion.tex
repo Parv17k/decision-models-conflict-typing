@@ -1,0 +1,40 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\paragraph{What \jev offers as a conflict classifier.} Conflict typing sits on the critical path of every
+search-augmented answer, so its latency and cost add to every request. \jev classifies a query with about ten
+retrieved pages in \jevlat\,s for \$\jevcost per thousand queries, with the accuracy of the LLM used in the
+original study. That makes conflict typing affordable as an always-on step. When the accuracy of a
+current LLM is required, \jev's confidence is good enough to route only its uncertain queries to the LLM, which
+recovers most of the gap at under a third of the LLM's cost. The probabilities have a second use: a system that
+receives a distribution over conflict types can hedge between expected behaviours when two types are close, which
+a hard label does not allow.
+
+\paragraph{How to ask.} The direct choice question was the most robust format. The yes/no decomposition looked
+natural but inherited \jev's yes-bias; the repaired tree is better calibrated but encodes choices fitted to \jev on
+a small development split, and it did not carry over to four other decision models. For a new decision model we
+would start from the flat question.
+
+\paragraph{What the diagnostics change.} Two widely reported weaknesses of decision models predicted specific
+failures here, and neither appeared. Date handling, a documented weakness of \jev, turned out to be irrelevant
+because outdated sources are recognised from their content. Order sensitivity is real, but the LLM shares it. The
+planted-source test shows that one contradicting page out of about ten is noticed as reliably by \jev as by the LLM,
+at the cost of more false alarms that a threshold can control. Conflict typing therefore does not inherit these
+weaknesses in the way one might fear; it does inherit the general limit that decision models are weaker on long
+inputs \citep{duan2026general}, and our inputs are long.
+
+\paragraph{\jev among decision models.} \jev is not the most accurate decision model on this task. Perplexity's
+decider is significantly more accurate and, with the tree question, ties the current LLM. \jev's advantages are
+speed, the strongest \emph{Outdated} recall, and well-behaved confidence for escalation. Since every decision model
+accepted \jev's questions unchanged, practitioners can swap models without changing the pipeline.
+
+\paragraph{Limitations.}
+(i) \conflicts is small: with \ntest test queries, differences under about five points are not significant, and the
+cascade can be shown close to, but not formally equivalent to, the LLM. (ii) The label distribution reflects how the
+queries were selected, not real search traffic, and the dataset has only five natural \emph{Misinformation}
+queries; our planted variant tests one kind of misinformation (an entity or value substituted in a single source).
+(iii) Hosted models change without notice; three of the decision models have unversioned identifiers, and our rerun
+of Gemini~2.5 Flash scores below the published figure. We release all outputs so that results can be checked without
+rerunning them. (iv) We evaluate classification only; we do not measure whether a predicted type improves the final
+answer, which \citet{cattan2025dragged} established for the gold type. (v) Neither the decision models nor the LLMs
+were deterministic: identical requests changed 2--3\% of predictions.

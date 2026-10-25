@@ -1,0 +1,137 @@
+\section{Results}
+\label{sec:results}
+
+\input{generated/tab_main}
+
+\subsection{\jev against the LLMs}
+\label{sec:main}
+
+Table~\ref{tab:main} gives the main comparison. Asked directly, \jev 1.13 classifies \jevacc\% of test queries
+correctly [\jevlo, \jevhi]. Gemini~2.5 Flash with the paper's prompt reaches \gtwofiveacc\% on the same queries;
+the difference is \jevvstwofivediff points [\jevvstwofivelo, \jevvstwofivehi] ($p\jevvstwofivep$). \jev does this
+at \$\jevcost per thousand queries against \$\gtwofivecost (\costratiotwofive$\times$ cheaper) and in
+\jevlat\,s against \gtwofivelat\,s (\latratiotwofive$\times$ faster). It is the fastest of the \nconfigs model
+configurations we ran; the fastest non-\jev configuration takes \fastestother\,s.
+
+The current Gemini~3.8 Flash is clearly stronger: at its lowest thinking level it reaches \gthreeeightacc\%, and
+\jev's difference from it is \jevvsthreeeightdiff points [\jevvsthreeeightlo, \jevvsthreeeighthi] ($p\jevvsthreeeightp$), at
+\costratiothreeeight$\times$ \jev's cost and \latratiothreeeight$\times$ its latency. More thinking does not help
+either Gemini: Gemini~3.8 Flash at its default level scores \gthreeeightdefaultacc\% ($p\gthinkvsnothinkp$ against
+the low level) and Gemini~2.5 Flash with thinking \gtwofivethinkacc\% ($p\gtwofivethinkvsnothinkp$).
+
+\paragraph{Reproducing the published number.} On all \nall queries, the scope of the published result, our rerun of
+Gemini~2.5 Flash scores \allgtwofive\% against the published 65.3\%, and \jev \alljev\%. The hosted model may have
+changed since publication, and the paper does not specify how results were joined in the prompt or whether thinking
+was enabled. We therefore compare \jev with our rerun on identical inputs and report the published figure only as
+context.
+
+\input{generated/tab_perclass}
+
+\paragraph{Where \jev is strong and weak.} Per class (Table~\ref{tab:perclass}), flat \jev is strongest on
+\emph{Outdated information} (F1 \jevoutdf, against \gthreeeightoutdf for Gemini~3.8 Flash) and weakest, like every
+system, on \emph{Misinformation}, which has \nmisitest test instances. Its probabilities are informative but
+over-confident: the mean top probability is \flatmeanconf\% at \jevacc\% accuracy (ECE \jevece).
+
+\subsection{Flat or tree?}
+\label{sec:formulation}
+
+Decomposing the taxonomy into yes/no questions fails. Tree v1 reaches \treeoneacc\%, \flatvstreediffabs points below
+the flat question ($p\flatvstreep$), with a macro-F1 of \mftreeone. The failure is concentrated: tree v1 labels
+\testopintocomp of the \testnopin \emph{Conflicting opinions} test queries as \emph{Complementary} (F1
+\treeoneopinf for opinions). We had seen the cause on the development split: \jev answers the \emph{compatible}
+question \emph{yes} for opinion topics almost as readily as for complementary ones (mean probability
+\devcompatopin vs.\ \devcompatcomp), sending \devopintocomp of \devnopin development opinion queries the wrong way,
+while the \emph{opinion} question separates the two classes well (AUROC \devopinionauroc). The \emph{misinformation}
+question shows the yes-bias reported for batched yes/no questions \citep{deusser2026jev}: its mean probability
+ranged from \devmisinfolo to \devmisinfohi across all five classes.
+
+Tree v2 asks \emph{opinion} first and treats misinformation as the residual factual conflict. On the test split it
+reaches \treetwoacc\%, tied with flat ($p\flatvstreevtwop$), and is much better calibrated (ECE \treetwoece vs.\
+\jevece). Its weaknesses are the price of the revision: it rarely predicts \emph{Outdated} (F1 \treetwooutdf) and,
+as \S\ref{sec:diagnostics} shows, it misses planted misinformation. It also does not transfer: applied unchanged to
+the other decision models it helps Perplexity's model, leaves Microsoft's within noise, and hurts Liquid's and GPT-6-luna's (Table~\ref{tab:decision_models}).
+We therefore treat the flat question as \jev's primary format and tree v2 as a \jev-specific variant.
+
+\subsection{A confidence-gated cascade}
+\label{sec:cascade}
+
+\input{generated/tab_cascade}
+
+\jev's confidence ranks its own errors (AUROC \cascflatauroc for flat, \casctreeauroc for tree v2), which makes it
+a natural first stage before an LLM. Table~\ref{tab:cascade} and Figure~\ref{fig:cascade} show the result.
+Escalating 10\% of queries to Gemini~3.8 Flash already lifts flat \jev from \cascflatzeroacc\% to
+\cascflattenacc\% at \cascflattencost\% of the LLM's cost. At the pre-specified 25\% the cascade reaches
+\cascflattfacc\%, a difference of \cascflattfdiff points from the LLM alone [\cascflattflo, \cascflattfhi] ($p\cascflattfp$), at
+\cascflattfcost\% of its cost and \cascflattflat\,s mean latency. Escalating by confidence beats escalating at
+random at every fraction (\cascflattfacc\% vs.\ \cascflattfrand\% at 25\%). With tree v2 as the first stage, the
+cascade at 50\% scores \casctreefiftyacc\%, numerically above the LLM alone ($p\casctreefiftyp$), because \jev is
+right on some queries the LLM gets wrong; we read this as a trend, not a gain.
+
+The interval at 25\% rules out a loss larger than \cascflattfloabs points relative to the LLM; showing formal
+equivalence at a tighter margin would need more queries than \conflicts provides.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.78\textwidth]{figures/cascade_cost_accuracy.pdf}
+\caption{Accuracy against cost (log scale) on the test split. Curves: \jev answers first and the least confident
+fraction of queries goes to Gemini~3.8 Flash; dots mark 25\% and 50\% escalated (at 25\% the two curves nearly
+coincide). Diamonds: LLMs alone with the paper's prompt.}
+\label{fig:cascade}
+\end{figure*}
+
+\subsection{Diagnostics}
+\label{sec:diagnostics}
+
+We specified three hypotheses and their tests before running them; Tables~\ref{tab:diagnostics}
+and~\ref{tab:plant} give the results. An identical rerun sets the noise floor: no system is deterministic, and
+\jev changes its predicted type on \diagjfrerunflip\% of queries with nothing changed (Gemini~3.8 Flash:
+\diaggmrerunflip\%).
+
+\input{generated/tab_diagnostics}
+
+\paragraph{Dates do not matter.} \jev's documentation lists ordering dates as a known weakness
+\citep{typesafe2026jagged}, and we expected it to explain errors on \emph{Outdated}. It does not. Removing every
+date changes no system's accuracy beyond the noise floor (\jev: \diagjfnodatesdiff points, $p\diagjfnodatesp$;
+Gemini: \diaggmnodatesdiff, $p\diaggmnodatesp$), and neither does adding each result's recency rank computed in
+code. \jev's recall on \emph{Outdated} is \diagjforigrec\% originally, \diagjfnodatesrec\% without dates and
+\diagjfdatesincoderec\% with code-computed recency, at or above Gemini's in every condition. The systems recognise
+outdated sources from their content (phrases such as ``former'' or ``as of'', and conflicting values), not from
+publication dates. The weak \emph{Outdated} score of tree v2 comes from its question design, not from dates.
+
+\paragraph{Order sensitivity is real but not specific to \jev.} Shuffling the results changes \jev's predicted type
+on \diagjfshuffleflip\% of queries [\diagjfshufflelo, \diagjfshufflehi] over both seeds, well above its
+\diagjfrerunflip\% noise floor; Gemini~3.8 Flash flips on \diaggmshuffleflip\%
+[\diaggmshufflelo, \diaggmshufflehi]. On the same shuffles the two do not differ ($p\diagflipjevvsgonep$ and $p\diagflipjevvsgtwop$). Accuracy moves by at most a few points in either direction.
+
+\input{generated/tab_plant}
+
+\paragraph{A planted false source is noticed as well as by the LLM.} \conflicts has too few \emph{Misinformation}
+queries to evaluate. We construct them: in \nplant \emph{No conflict} test queries whose gold answer appears in some
+result, we rewrite one such result so that it states a plausible wrong answer, produced by a third model
+(GPT-4.1-mini) so that neither classifier judges its own text. The expected label becomes \emph{Misinformation}.
+Flat \jev labels \plantjfhit\% of planted queries as misinformation against \plantgmhit\% for Gemini~3.8 Flash
+($p\planthitp$), but it also does so for \plantjffa\% of the clean versions of the same queries against
+\plantgmfa\% ($p\plantfap$). Net of false alarms the two are identical (Youden \plantjfyouden each; difference
+\plantyoudendiff [\plantyoudenlo, \plantyoudenhi]). \jev's misinformation probability separates planted from clean
+versions with AUROC \plantjfauroc, so a threshold can trade detections for fewer false alarms. Tree v2, whose
+misinformation rule was chosen on a development split with a single misinformation query, detects only
+\plantjthit\%.
+
+\subsection{Robustness across versions and decision models}
+\label{sec:robustness}
+
+\paragraph{\jev 1.14.} The newer version behaves like 1.13 (Table~\ref{tab:main}): \onefouracc\% with the flat
+question (\onefourvsonethreediff points, $p\onefourvsonethreep$) and \onefourtreeacc\% with tree v2
+($p\onefourtreevsonethreep$), still tied with Gemini~2.5 Flash ($p\onefourvstwofivep$), with the same failure
+of tree v1 and the same cascade behaviour (tree v2 at 50\%: \onefourcascfiftyacc\%, $p\onefourcascfiftyp$ against
+the LLM alone).
+
+\input{generated/tab_decision_models}
+
+\paragraph{Other decision models.} Table~\ref{tab:decision_models} places \jev among the decision models
+available through the same gateway. \jev is mid-pack in accuracy and the fastest. Perplexity's decider is the most
+accurate: \pplxflatacc\% with the flat question, \pplxvsjevdiffabs points above \jev ($p\pplxvsjevp$), and
+\pplxtreeacc\% with tree v2, statistically tied with Gemini~3.8 Flash ($p\pplxtreevsgp$). As a cascade first
+stage it reaches \cascpplxtfacc\% at \cascpplxtfcost\% of the LLM's cost at $f=25\%$. Not every decision model's
+confidence is useful for escalation: GPT-6-luna's confidence barely ranks its errors (AUROC \lunaauroc), and its
+25\% cascade is no better than random escalation (\lunacasctf\% vs.\ \lunacasctfrand\%).
