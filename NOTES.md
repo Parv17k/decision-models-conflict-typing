@@ -1,5 +1,15 @@
 # Decision log
 
+The study covers typed decision models as a class: every decision model one gateway served on 2026-10-25 (see
+"Decision-model lens and the full hosted census" below). It began as a study of one model, Jev 1.13, which is why
+the early entries are written about Jev; they are kept as written because this file is a dated record. Since
+2026-10-25 the repository is `Parv17k/decision-models-conflict-typing` (formerly `jev-conflict-classifier`) and the
+package `dmconflict` (formerly `jevconflict`); commands below that use the old name run as `dmconflict`, and decision-
+model methods now need an explicit `--model`.
+The per-subset reports named in older entries (`comparison_decision_models_*`, `comparison_full_*`,
+`cascade_decision_models_test.md`, `cascade_jev114_test.md`) were consolidated into `runs/comparison_{test,all}.md`,
+`runs/cascade_{test,all}.md` and `runs/diagnostics_test.md`, which now cover every model; their numbers are unchanged.
+
 Rule: every setting is chosen on the development split only (52 queries, stratified, `data/splits.json`),
 frozen, then run once on the test split (406 queries). Test numbers are the results; development
 numbers are tuning evidence.
@@ -55,6 +65,13 @@ Hosted Laya (`convaiinnovations/laya` on Vercel, same key) can't run the frozen 
 - Fitting it would need shortened definitions and sources cut to about a tenth: a different task, plus a Jev control on
   the same cut inputs. Prior work has Laya near chance zero-shot (26.3% on JEVal, arXiv 2610.03935).
 Decision (authors): leave Laya out; mention it in one sentence in the paper. No Laya results were produced.
+
+Re-checked 2026-10-25 when `laya-multilingual` (sliding window to 8,192 tokens) was suggested. The gateway lists only
+`convaiinnovations/laya` and `laya-free`, both already advertising an 8,192-token context window. Probes on one dev
+query (free model): the paper's question is rejected (422) even with a 200-character state; with five short labels in
+place of the definitions, the request is still rejected at 3,000 characters of state and accepted at 1,500, where it
+returned near-uniform probabilities (0.15–0.25). The paper's definitions are 261–409 characters each, so the
+per-option cap blocks the frozen question regardless of the context window. No change to the decision.
 
 ## Added baseline: Gemini 3.8 Flash (2026-10-25)
 
@@ -221,6 +238,150 @@ selective reporting). Claims must stay inside the evidence:
 - Not supported: "best decision model" (Perplexity is better, p = 0.03); "cheapest" (Liquid, Perplexity ~$0.09 vs
   $0.19 per 1k); "on par with the current LLM" (−8.1 vs Gemini 3.8, p = 0.0003); "first study of Jev as a classifier"
   (arXiv 2609.37647, 2610.11978, 2610.03935 already evaluate Jev on classification; the novelty is the conflict task).
+
+## Decision-model lens and the full hosted census (protocol fixed 2026-10-25, before any run)
+
+Authors' decision: the paper's subject becomes typed decision models as a class, not Jev. No model is singled out in
+the title, abstract or contributions; Jev is one of the models. This supersedes "Paper framing" above for the paper's
+framing; that section's evidence rules still apply to every model.
+
+- Census: every `type: evaluation` model on the gateway on 2026-10-25. Already run: `typesafe-ai/jev-1.13.0`,
+  `typesafe-ai/jev-1.14.0`, `perplexity/pplx-decider-v1.2`, `openai/gpt-6-luna-decisions`, `liquid/d1`,
+  `microsoft/microsoft-decision-1`. Added now: `perplexity/pplx-decider-flash-v1.2`, `liquid/d1-ultra`,
+  `baseten/elephant-1`, `baseten/mammoth-1`, `scaledown/scaledown-classify-1`. Not run: `typesafe-ai/jev` (floating
+  alias of a pinned version), `convaiinnovations/laya` and `laya-free` (input limits, see Laya section).
+- Acceptance probe before any run: the largest test query (by state size) with the flat and the tree question; HTTP
+  status only, no outputs read. A model that rejects is reported as excluded with the reason, as Laya was.
+- Protocol identical to "Other decision models": Jev's frozen `flat` and `tree` questions, same inputs, combination
+  rules applied unchanged (tree_v2 stays as fitted on Jev 1.13's dev answers and is reported as such), dev + test,
+  nothing tuned per model. Each model's `flat` is the cheap stage of the same cascade (f = 25%, 50%).
+- Diagnostics extended to every decision model's `flat` (all 11 accepted models): rerun, no_dates, dates_in_code,
+  shuffle1, shuffle2, and plant on the frozen `data/plants.json`. Reason: under the new lens, the hypotheses are about
+  decision models, so one model is not enough. Hypotheses, perturbations and metrics unchanged. Tree diagnostics stay
+  Jev-only (already run).
+- Jev 1.14 stays a version-stability row; Jev 1.13 is the Jev entry everywhere else (unchanged from before).
+
+Acceptance probe (largest test query, 44,264 characters of state): Perplexity decider flash v1.2, Liquid d1 ultra,
+Baseten Elephant-1 and Mammoth-1 accept both questions. ScaleDown Classify-1 rejects any state without a `text` or
+`document` field (422, a schema requirement, not a length limit). Amendment, fixed before any ScaleDown run: ScaleDown
+receives the same content as one `text` field, rendered exactly as the LLMs' numbered results block
+(`Query: ...` then `[1] ...`, `[2] ...`); questions unchanged. It accepted both questions on the largest query. Reported
+with a footnote on the input format.
+
+### Census results (test, n = 406; run 2026-10-25; spend about $1.5; all numbers in `paper/generated/`)
+
+- Flat accuracy 50.0–67.0% (median 62.6). Against Gemini 2.5 Flash (paper's setup, 61.3%): 8 tied, 2 better
+  (Liquid d1 Ultra +5.7, p = 0.027; Perplexity v1.2 +5.4, p = 0.049), 1 worse (ScaleDown −11.3). Against Gemini 3.8
+  low (70.0%): 3 tied (Liquid d1 Ultra, Perplexity v1.2, GPT-6 Luna), 8 worse. Baseten Elephant-1 and Mammoth-1 were
+  billed $0 (free on the gateway).
+- Tree v1 significantly worse than flat for all 11. Tree v2 (fitted on Jev 1.13 dev): better for 0, tied 7, worse 4.
+- Cascade at 25% → Gemini 3.8 low: 8 of 11 tied with the LLM at 25–37% of its cost; confidence beats random for 10
+  of 11 (GPT-6 Luna is the exception, AUROC 0.65).
+- Diagnostics (flat): dates significant in 0 of 22 tests. 5 models deterministic on rerun. Shuffle flips 5.4–42.1%
+  (Gemini 9.4%); paired vs Gemini, 4 flip more, 1 less, 6 no different; accuracy changes in 2 of 22 shuffle tests
+  (both GPT-6 Luna). Planted source: as hard labels 8 of 11 significantly worse than Gemini 3.8 (Youden), 3 tied
+  (Jev 1.13 equals it at +0.490); P(Misinformation) AUROC ≥ 0.75 for 10 of 11.
+- Draft claims corrected after these results (before any text was shared): "no system is deterministic", "order
+  sensitivity is shared with the LLM", "most decision models detect a planted source as well as the LLM".
+
+## End-to-end experiment: does a cheaper type predictor keep the Pipeline gain? (protocol fixed 2026-10-25, before any generation call)
+
+Question: Cattan et al. report that giving the generator a *predicted* conflict type raises expected-behaviour
+adherence by about 9 points over Vanilla (their "Pipeline"; gold type, "Oracle", about 24). Do decision-model and
+cascade predictions keep that gain at a fraction of the classification cost?
+
+Generation (follows Cattan et al. §4 and App. A; their source is the reference):
+- Generator: `google/gemini-2.5-flash`, thinking off, temperature 0 (their "Gemini 2.5 Flash" row: Vanilla 65.7,
+  Pipeline 75.1, Oracle 88.0). Inputs: the same numbered search results as the classification runs.
+- Vanilla prompt: their Figure 3 verbatim. Type-conditioned prompt: Vanilla plus a description of the conflict type
+  ("we add a description of the conflict type to the Vanilla prompt"; the exact wording is not published). Ours: the
+  type's definition and expected behaviour from their §2, with citations and worked examples removed, inserted between
+  the instruction and the query. Fixed before any call; same text for every predictor.
+- Design: for each test query, one answer per possible type (5) plus Vanilla, generated once. A predictor's Pipeline
+  answer for a query is the answer generated for the type it predicts. Conditional on the type, every predictor
+  therefore gets the identical answer, so differences between predictors come only from the types they supply.
+  Unparsed LLM predictions fall back to Vanilla.
+
+Evaluation (rebuilt from their §3; their grader prompts are not published):
+- Expected-behaviour adherence: binary LLM judge, `google/gemini-2.5-flash` (their judge model), thinking off,
+  temperature 0. One prompt per *gold* type containing the query, the type's definition and expected behaviour, the
+  adherent / non-adherent example pair from their Table 3 (for No conflict, which has no published pair, one pair we
+  write around their Titanic example), and the candidate response. No search results, as in their description. Output:
+  short reason, then a yes/no verdict. Same judge for every condition.
+- Answer recall: LLM judge of semantic inclusion of the gold answer, on gold No conflict, Outdated and Misinformation
+  queries (202 test queries), same judge model.
+- Factual grounding (their third metric) is not measured: generation is identical across predictors given a type, and
+  the question is behaviour. Stated as a limitation.
+- Judge validation: 100 answers sampled with a fixed seed, stratified by gold type (20 each; Misinformation takes all
+  of its answers and the rest goes to the other types) and by condition (half Vanilla, half type-conditioned), labelled
+  by co-authors blind to the judge's verdict and to the condition. Agreement reported as accuracy (Cattan et al.: 0.89)
+  and Cohen's kappa. Pre-specified fallback: if agreement is below 0.80, rerun the same judge prompts with
+  `google/gemini-3.8-flash` (thinking low) and report both judges.
+
+Conditions (test split, 406 queries), all computed from the one answer table:
+- Vanilla; Oracle (gold type).
+- Pipeline with types from: Gemini 2.5 Flash (thinking off; Cattan et al.'s Pipeline predictor), Gemini 3.8 Flash
+  (thinking low); each of the 11 decision models (flat question); each decision model's cascade to Gemini 3.8 Flash
+  at f = 25% and 50%. All predictions are the stored classification runs; no new classification calls.
+- Reported: adherence (overall and per gold type), answer recall, paired bootstrap CI and exact McNemar against
+  Vanilla and against the Gemini 2.5 Flash Pipeline, share of the Oracle gain recovered, and classification cost per
+  1k queries. Primary claims: (a) reproduction of the Pipeline gain over Vanilla; (b) for each decision model and
+  cascade, tied / better / worse than the Gemini 2.5 Flash Pipeline.
+- Development split: the same pipeline runs on the 52 dev queries first, to check prompts, parsing and costs only.
+  No prompt is changed on the basis of dev scores; bug fixes are logged here.
+- Estimated spend: about $8 (2,436 generations and about 2,640 judge calls on test, plus dev).
+
+Dev pipeline check (2026-10-25, 52 queries, $0.63): 312 answers, none empty; 312 behaviour and 156 recall verdicts,
+none unparsed. No code or prompt changed afterwards. Observation recorded, not acted on (the protocol forbids tuning
+on dev scores): Vanilla adherence is 0.846 on dev against 0.657 in Cattan et al. for the same generator, so our judge
+may be more lenient than theirs (it sees no search results, as their description says, but its prompts and examples
+differ). The human validation decides; the fallback judge is pre-specified above.
+
+### Test results (2026-10-25; judge validated 2026-10-26, below; spend $5.14; `runs/endtoend_test.md`)
+
+2,436 answers, 2,436 behaviour and 1,212 recall verdicts; none empty or unparsed.
+- Vanilla 0.879, Oracle 0.953 (+7.4, p < 0.001). Gemini 2.5 Flash Pipeline 0.916 (+3.7 over Vanilla, p = 0.03;
+  half of the Oracle gain). Cattan et al.: Vanilla 0.657, Pipeline 0.751, Oracle 0.880 for this generator. Our judge
+  rates Vanilla far higher, which compresses every gain (ceiling); the ordering Vanilla < Pipeline < Oracle holds.
+- Decision models (flat) as the Pipeline predictor: 10 of 11 not significantly different from the Gemini 2.5 Flash
+  Pipeline (−1.5 to +0.7 points); ScaleDown is significantly worse (−3.9, p = 0.011) and equal to Vanilla.
+  GPT-6 Luna −2.7 (p = 0.052). Cascades at 25%: all 11 within −1.0 to +0.7 of the Gemini 2.5 Pipeline.
+- Gains concentrate where Cattan et al. found them: Conflicting opinions (Vanilla 0.824 → Oracle 0.971) and Outdated
+  (0.727 → 0.873). No conflict is at ceiling (0.951 → 0.958).
+- Answer recall 0.906 (Vanilla) to 0.931; no condition lowers it.
+- Human validation sheet: `human_eval/behaviour_sample.csv` (100 items, seed 13, 20 per gold type, 44 Vanilla); key
+  in `runs/human_eval_key_test.csv`. The judge says "follows" for 94 of the 100, so kappa, not accuracy alone, is the
+  informative statistic.
+
+### Judge validation (2026-10-26): the primary judge meets the pre-specified threshold
+
+Two co-authors labelled the 100 items blind (`human_eval/behaviour_sample_1.csv`, `_2.csv`). One label is excluded:
+in sheet 2, the row for item 99 shows item 98's response.
+
+| Agreement on the 100 items | Accuracy | Kappa |
+|---|---|---|
+| Annotator 1 vs annotator 2 | 0.920 | 0.668 |
+| Primary judge (Gemini 2.5 Flash) vs majority (ties count as follows, as coded before labelling) | 0.920 | 0.459 |
+| Primary judge vs annotator 1 / annotator 2 | 0.910 / 0.870 | 0.484 / 0.323 |
+| Primary judge vs both, where they agree (n = 92) | 0.924 | 0.497 |
+| Fallback judge (Gemini 3.8 Flash low) vs majority; vs annotator 1 / 2 | 0.870; 0.840 / 0.820 | 0.244; 0.186 / 0.155 |
+
+Per gold type, primary judge where the annotators agree: No conflict 0.900 (n = 20), Complementary 0.947 (19),
+Conflicting opinions 0.889 (18), Outdated 0.938 (16), Misinformation 0.947 (19). Kappa is moderate because both
+humans and judge say "follows" for about 90% of items.
+
+Claude Sonnet 5.5 given the annotators' README
+(`scripts/llm_annotator.py`, not pre-specified, $0.35) is in `human_eval/behaviour_sample_llm_claude-sonnet-5.5.csv`.
+
+Fallback judge results on test (run on all answers while the validation was in progress; 3,648 verdicts, none
+unparsed, $2.54; `runs/endtoend_test_judge_gemini-3.8-flash.md`, next to the primary judge's `runs/endtoend_test.md`):
+- Vanilla 0.911, Oracle 0.968 (+5.7, p < 0.001), Gemini 2.5 Flash Pipeline 0.897 (−1.5 vs Vanilla, p = 0.47). The
+  Pipeline gain over Vanilla (claim a) is therefore judge-dependent: +3.7 (p = 0.03) under the primary judge, none
+  under the fallback. The Oracle gain holds under both.
+- Claim (b) holds under both judges: of 34 predictors (11 decision models, their 25% and 50% cascades, Gemini 3.8),
+  one differs significantly from the Gemini 2.5 Flash Pipeline under each judge (primary: ScaleDown −3.9, p = 0.011;
+  fallback: Microsoft Decision-1 → Gemini 3.8 at 25%, +2.7, p = 0.035), a rate consistent with chance over 34 tests.
+- Answer recall 0.871–0.896 under the fallback (primary 0.906–0.931).
 
 ## Development results (Jev 1.13.0, n = 52; flat here is the superseded paraphrase)
 
