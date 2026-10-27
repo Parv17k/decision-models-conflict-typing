@@ -30,3 +30,4 @@ paper/official/
 
 # arXiv package (built by scripts/make_arxiv.sh)
 arxiv/
+.DS_Store

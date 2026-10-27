@@ -42,6 +42,7 @@ if [ -n "$TODOS" ]; then echo "WARNING: placeholders remain (orange [TODO] text 
 cp main.pdf "$OUT/preprint.pdf"
 rm -f build.log main.aux main.blg main.log main.out main.pdf missfont.log refs.bib
 
-tar -czf "$OUT/arxiv_source.tar.gz" -C "$SRC" .
+# COPYFILE_DISABLE: no macOS ._ metadata files in the archive.
+COPYFILE_DISABLE=1 tar -czf "$OUT/arxiv_source.tar.gz" -C "$SRC" .
 "$ROOT/.venv/bin/python" "$ROOT/scripts/arxiv_metadata.py" > "$OUT/metadata.txt"
 echo "arXiv package: $OUT/arxiv_source.tar.gz ($(du -h "$OUT/arxiv_source.tar.gz" | cut -f1)), preview $OUT/preprint.pdf"
