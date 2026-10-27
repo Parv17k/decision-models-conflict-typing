@@ -1,10 +1,10 @@
 import numpy as np
 import pytest
 
-from jevconflict.data import LABEL_OF, LABELS, load, make_split
-from jevconflict.methods import combine_tree, flat, tree, tree_hard
-from jevconflict.metrics import accuracy, ece, macro_f1, mcnemar_exact, paired_bootstrap
-from jevconflict.prompts import CATEGORIES, TREE_QUESTIONS, format_result, state
+from dmconflict.data import LABEL_OF, LABELS, load, make_split
+from dmconflict.methods import combine_tree, flat, tree, tree_hard
+from dmconflict.metrics import accuracy, ece, macro_f1, mcnemar_exact, paired_bootstrap
+from dmconflict.prompts import CATEGORIES, TREE_QUESTIONS, format_result, state
 
 ROW = {"id": 0, "label": "outdated", "question": "who is the ceo of x",
        "results": [{"url": "u1", "title": "t1", "snippet": "s1", "date": "2024-01-02", "short_text": "body"},
@@ -93,7 +93,7 @@ def test_real_dataset_loads():
 
 
 def test_combine_tree_v2_asks_opinion_first_and_misinformation_is_the_residual():
-    from jevconflict.methods import combine_tree_v2
+    from dmconflict.methods import combine_tree_v2
     pick = lambda p: max(LABELS, key=combine_tree_v2(p).get)
     base = dict(differ=0.9, compatible=0.8, opinion=0.1, outdated=0.1, misinformation=0.9)
     assert abs(sum(combine_tree_v2(base).values()) - 1) < 1e-9
@@ -105,7 +105,8 @@ def test_combine_tree_v2_asks_opinion_first_and_misinformation_is_the_residual()
 
 def test_flat_question_is_the_papers_text_word_for_word():
     import re
-    from jevconflict.prompts import FLAT_INSTRUCTIONS, PAPER_PROMPT
+
+    from dmconflict.prompts import FLAT_INSTRUCTIONS, PAPER_PROMPT
     norm = lambda s: re.sub(r"[\s*]+", " ", s).replace(" Example: Query:", "").replace(" Search Results:", "").strip()
     paper = norm(PAPER_PROMPT.replace("*Example:*", "").replace("*Query:*", "").replace("*Search Results:*", ""))
     assert norm(FLAT_INSTRUCTIONS) in paper
@@ -114,14 +115,14 @@ def test_flat_question_is_the_papers_text_word_for_word():
 
 
 def test_paper_prompt_fills_query_and_numbered_results():
-    from jevconflict.prompts import paper_prompt
+    from dmconflict.prompts import paper_prompt
     p = paper_prompt(ROW)
     assert "QUERY: who is the ceo of x" in p and "[1]\nURL: u1" in p and "[2]\nURL: u2" in p
     assert "{query}" not in p and "{search_results}" not in p
 
 
 def test_parse_category():
-    from jevconflict.methods import parse_category
+    from dmconflict.methods import parse_category
     assert parse_category('```json\n{"explanation": "x", "category": 4}\n```') == "outdated"
     assert parse_category('{"category": "2", "explanation": "y"}') == "complementary"
     assert parse_category('{"category": 7}') == "unparsed" and parse_category("no json") == "unparsed"
@@ -133,7 +134,7 @@ def test_parse_category():
 
 
 def test_paper_llm_record_is_hard_label():
-    from jevconflict.methods import paper_llm
+    from dmconflict.methods import paper_llm
 
     class FakeChat:
         def complete(self, prompt):
@@ -151,14 +152,14 @@ def _rec(i, label, pred, top, usd=1.0, lat=1.0):
 
 
 def test_escalate_mask_takes_least_confident():
-    from jevconflict.cascade import escalate_mask
+    from dmconflict.cascade import escalate_mask
     m = escalate_mask(np.array([0.9, 0.2, 0.5, 0.3]), 0.5)
     assert m.tolist() == [False, True, False, True]
     assert not escalate_mask(np.array([0.1, 0.2]), 0).any() and escalate_mask(np.array([0.1, 0.2]), 1).all()
 
 
 def test_cascade_curve_endpoints_and_cost():
-    from jevconflict.cascade import auroc, curve
+    from dmconflict.cascade import auroc, curve
     cheap = [_rec(0, "outdated", "outdated", 0.9, usd=0.1), _rec(1, "complementary", "no_conflict", 0.3, usd=0.1)]
     exp = [_rec(0, "outdated", "no_conflict", 1.0, usd=2.0, lat=3.0), _rec(1, "complementary", "complementary", 1.0, usd=2.0, lat=3.0)]
     rows = {r["f"]: r for r in curve(cheap, exp, fractions=[0.0, 0.5, 1.0])}
@@ -176,20 +177,20 @@ def _prow():
 
 
 def test_parse_date_formats():
-    from jevconflict.perturb import parse_date
+    from dmconflict.perturb import parse_date
     assert parse_date("2025-01-17 00:00:00").year == 2025 and parse_date("Nov 7, 2024").month == 11
     assert parse_date("2024-02-15").day == 15 and parse_date("4 days ago") is None and parse_date("NA") is None
 
 
 def test_unperturbed_input_is_unchanged_so_cached_runs_stay_valid():
-    from jevconflict.perturb import apply
+    from dmconflict.perturb import apply
     row = _prow()
     assert state(apply("rerun", row)) == state(row)
     assert "Recency" not in state(row)["result_1"]
 
 
 def test_date_perturbations():
-    from jevconflict.perturb import dates_in_code, no_dates
+    from dmconflict.perturb import dates_in_code, no_dates
     row = _prow()
     nd = no_dates(row)
     assert all("Date:" not in v for k, v in state(nd).items() if k != "query") and row["results"][0]["date"] == "2024-01-10"
@@ -202,15 +203,15 @@ def test_date_perturbations():
 
 
 def test_shuffle_is_seeded_and_a_permutation():
-    from jevconflict.perturb import shuffle
+    from dmconflict.perturb import shuffle
     row = _prow()
-    a, b, c = shuffle(row, 1), shuffle(row, 1), shuffle(row, 2)
+    a, b = shuffle(row, 1), shuffle(row, 1)
     assert a == b and sorted(r["url"] for r in a["results"]) == ["a", "b", "c"]
     assert [r["url"] for r in row["results"]] == ["a", "b", "c"]
 
 
 def test_plant_replaces_answer_in_one_result_case_insensitively():
-    from jevconflict.perturb import apply, plant, plant_candidates
+    from dmconflict.perturb import apply, plant, plant_candidates
     row = _prow()
     assert plant_candidates(row, "Paris") == [0]
     p = plant(row, "Paris", "Lyon")
@@ -224,7 +225,7 @@ def test_plant_replaces_answer_in_one_result_case_insensitively():
 
 
 def test_plant_matches_whole_words_and_skips_yes_no():
-    from jevconflict.perturb import plant, plant_candidates
+    from dmconflict.perturb import plant, plant_candidates
     row = {"id": 1, "label": "no_conflict", "question": "q",
            "results": [{"title": "", "snippet": "In 2019 there was 1 winner, not 10.", "short_text": "", "date": "NA"}]}
     p = plant(row, "1", "2")
@@ -232,3 +233,34 @@ def test_plant_matches_whole_words_and_skips_yes_no():
     yn = {"id": 2, "label": "no_conflict", "question": "q",
           "results": [{"title": "", "snippet": "Yes, it is. No doubt.", "short_text": "", "date": "NA"}]}
     assert plant_candidates(yn, "Yes") == [] and plant_candidates(yn, "no") == []
+
+
+def test_text_state_carries_the_same_content():
+    from dmconflict.prompts import state, text_state
+    row = {"question": "Q?", "results": [{"url": "u1", "title": "t1", "snippet": "s1", "text": "x1"},
+                                         {"url": "u2", "title": "t2", "snippet": "s2", "text": "x2"}]}
+    text = text_state(row)["text"]
+    assert text.startswith("Query: Q?\n\n[1]\n")
+    for v in state(row).values():
+        assert v in text
+
+
+def test_vanilla_prompt_is_the_papers_and_types_only_add_a_description():
+    from dmconflict.generate import TYPE_DESCRIPTIONS, generation_prompt
+    row = {"question": "Q?", "label": "outdated", "answer": "A",
+           "results": [{"url": "u", "title": "t", "snippet": "s", "text": "x"}]}
+    van = generation_prompt(row, "vanilla")
+    assert van.startswith("Write a high-quality and concise answer for the given question using only the provided "
+                          "search results.\nFor each sentence, cite the corresponding sources using [1][2][3].")
+    assert "QUERY: Q?" in van and "[1]" in van and "TYPE OF KNOWLEDGE CONFLICT" not in van
+    typed = generation_prompt(row, "outdated")
+    assert TYPE_DESCRIPTIONS["outdated"] in typed
+    assert typed.replace("TYPE OF KNOWLEDGE CONFLICT IN THE SEARCH RESULTS: " + TYPE_DESCRIPTIONS["outdated"] + "\n\n", "") == van
+
+
+def test_judge_verdict_parsing():
+    from dmconflict.generate import parse_verdict
+    assert parse_verdict('{"explanation": "x", "adheres": true}', "adheres") is True
+    assert parse_verdict('```json\n{"adheres": false}\n```', "adheres") is False
+    assert parse_verdict('"includes_answer": TRUE', "includes_answer") is True
+    assert parse_verdict("no verdict here", "adheres") is None

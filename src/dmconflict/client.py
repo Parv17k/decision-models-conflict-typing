@@ -100,7 +100,7 @@ class _Api:
 
 
 class Gateway(_Api):
-    """Decision models (Jev and others) on `/v1/evaluate`."""
+    """Decision models on `/v1/evaluate`."""
 
     def evaluate(self, state: dict, questions: dict) -> dict:
         return self._post("/v1/evaluate", {"model": self.model, "state": state, "questions": questions})

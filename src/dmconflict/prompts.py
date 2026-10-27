@@ -2,7 +2,7 @@
 
 `PAPER_PROMPT` is the conflict-type prompt of Cattan et al. copied verbatim from the arXiv
 source (`prompts/conflict_type_prediction.tex`, v2); only the LaTeX bold markers are removed. It
-is used unchanged for the LLM baseline. The flat Jev question carries the same instructions,
+is used unchanged for the LLM baseline. The flat decision-model question carries the same instructions,
 definitions and examples, word for word (checked by tests/test_core.py); only the output part
 differs, because a decision model returns probabilities instead of JSON.
 
@@ -147,7 +147,16 @@ def state(row: dict) -> dict:
             **{f"result_{i + 1}": format_result(r) for i, r in enumerate(row["results"])}}
 
 
+def numbered_results(row: dict) -> str:
+    """The results numbered [1], [2], ... as in the paper's generation prompts."""
+    return "\n\n".join(f"[{i + 1}]\n{format_result(r)}" for i, r in enumerate(row["results"]))
+
+
+def text_state(row: dict) -> dict:
+    """The same content as `state`, as one `text` field, for decision models whose schema requires it."""
+    return {"text": f"Query: {row['question']}\n\n{numbered_results(row)}"}
+
+
 def paper_prompt(row: dict) -> str:
     """LLM input: the same results, numbered [1], [2], ... as in the paper's generation prompts."""
-    results = "\n\n".join(f"[{i + 1}]\n{format_result(r)}" for i, r in enumerate(row["results"]))
-    return PAPER_PROMPT.replace("{query}", row["question"]).replace("{search_results}", "\n" + results)
+    return PAPER_PROMPT.replace("{query}", row["question"]).replace("{search_results}", "\n" + numbered_results(row))

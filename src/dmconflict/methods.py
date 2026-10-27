@@ -1,6 +1,6 @@
 """Ways of getting a conflict type for one query.
 
-Decision model (Jev):
+Decision models (any model on the gateway's `/v1/evaluate`):
 - `flat`: one choice question whose options are the five categories (direct classification).
 - `tree`: five yes/no questions in one request, combined in code into a distribution over the
   same five categories. `tree_hard` (same tree, fixed thresholds) and `tree_v2` (the same answers
@@ -17,7 +17,7 @@ import re
 
 from .client import Chat, Gateway, billed_cost
 from .data import LABELS
-from .prompts import FLAT_QUESTION, PAPER_NUMBER, paper_prompt, state, tree_questions
+from .prompts import FLAT_QUESTION, PAPER_NUMBER, paper_prompt, state, text_state, tree_questions
 
 CAUSES = ["conflicting_opinions", "outdated", "misinformation"]
 CAUSE_QUESTION = {"conflicting_opinions": "opinion", "outdated": "outdated", "misinformation": "misinformation"}
@@ -44,7 +44,7 @@ def combine_tree(p: dict[str, float]) -> dict[str, float]:
 
 def combine_tree_v2(p: dict[str, float]) -> dict[str, float]:
     """Revised from development data (52 queries; see NOTES.md): ask `opinion` before
-    `compatible`, because Jev answered `compatible` yes for opinion topics (mean 0.69); and make
+    `compatible`, because the model it was fitted on (Jev 1.13) answered `compatible` yes for opinion topics (mean 0.69); and make
     misinformation the factual conflict not explained by time, because the `misinformation`
     question said yes for every class (mean 0.53-0.79). Same five answers, different tree."""
     d, o, c, t = p["differ"], p["opinion"], p["compatible"], p["outdated"]
@@ -69,8 +69,16 @@ def _record(row: dict, method: str, probs: dict, data: dict, pred: str | None = 
             "latency_s": data.get("_latency_s"), "cached": data.get("_cached"), **extra}
 
 
+# Decision models whose schema accepts only a `text`/`document` state get the same content as one text field.
+TEXT_STATE_MODELS = {"scaledown/scaledown-classify-1"}
+
+
+def _state(gw: Gateway, row: dict) -> dict:
+    return text_state(row) if getattr(gw, "model", None) in TEXT_STATE_MODELS else state(row)
+
+
 def flat(gw: Gateway, row: dict) -> dict:
-    data = gw.evaluate(state(row), {"conflict_type": FLAT_QUESTION})
+    data = gw.evaluate(_state(gw, row), {"conflict_type": FLAT_QUESTION})
     raw = data["answers"]["conflict_type"]["probabilities"]
     probs = {k: float(raw.get(k, 0.0)) for k in LABELS}
     # Returned probabilities are rounded to two decimals; renormalise so they sum to 1.
@@ -80,7 +88,7 @@ def flat(gw: Gateway, row: dict) -> dict:
 
 
 def tree(gw: Gateway, row: dict) -> dict:
-    data = gw.evaluate(state(row), tree_questions())
+    data = gw.evaluate(_state(gw, row), tree_questions())
     raw = {k: _boolean_prob(a) for k, a in data["answers"].items()}
     return _record(row, "tree", combine_tree(raw), data, raw=raw)
 
@@ -112,10 +120,11 @@ def _thinking(config: dict) -> dict:
     return {"providerOptions": {"google": {"thinkingConfig": config}}}
 
 
-# name -> (function, kind of client, default model, extra chat request fields)
+# name -> (function, kind of client, default model, extra chat request fields). Decision-model
+# methods have no default: every decision model is named explicitly with --model.
 METHODS = {
-    "flat": (flat, "decision", "typesafe-ai/jev-1.13.0", None),
-    "tree": (tree, "decision", "typesafe-ai/jev-1.13.0", None),
+    "flat": (flat, "decision", None, None),
+    "tree": (tree, "decision", None, None),
     # The paper lists "Gemini 2.5 Flash" and "... Thinking" separately, so the plain model runs
     # with thinking off (budget 0 disables it on 2.5; Gemini 3.x still thinks at budget 0).
     "paper_llm": (paper_llm, "chat", "google/gemini-2.5-flash", _thinking({"thinkingBudget": 0})),

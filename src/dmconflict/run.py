@@ -1,10 +1,10 @@
 """CLI: `run` queries a model and stores one JSON line per query; `evaluate` scores stored runs
 side by side on the queries they all answered.
 
-    jevconflict run --method flat --split test
-    jevconflict run --method tree --split test
-    jevconflict run --method paper_llm --split test        # Google's prompt on Gemini 2.5 Flash
-    jevconflict evaluate --split test
+    dmconflict run --method flat --model liquid/d1-ultra --split test
+    dmconflict run --method tree --model liquid/d1-ultra --split test
+    dmconflict run --method paper_llm --split test        # Google's prompt on Gemini 2.5 Flash
+    dmconflict evaluate --split test
 
 Runs resume: queries already in the output file are skipped. Paid calls are cached in
 runs/api_cache.sqlite, shared by every model, method and split.
@@ -22,18 +22,33 @@ from tqdm import tqdm
 
 from .client import ROOT, Cache, Chat, Gateway
 from .data import DATA, LABELS, MERGED, load, split_ids
-from .perturb import PERTURBATIONS, WRONG_ANSWER_PROMPT, apply, plant_candidates
 from .methods import METHODS, combine_tree_v2, tree_hard
-from .metrics import (accuracy, bootstrap_ci, brier, confusion, ece, macro_f1, mcnemar_exact, nll,
-                      paired_bootstrap, per_class_f1)
+from .metrics import (
+    accuracy,
+    bootstrap_ci,
+    brier,
+    confusion,
+    ece,
+    macro_f1,
+    mcnemar_exact,
+    nll,
+    paired_bootstrap,
+    per_class_f1,
+)
+from .perturb import PERTURBATIONS, WRONG_ANSWER_PROMPT, apply, plant_candidates
 
 RUNS = ROOT / "runs"
 PLANTS = DATA / "plants.json"
 PLANT_MODEL = "openai/gpt-4.1-mini"
 PAPER = {"Gemini 2.5 Flash, as published (paper Table 4)": 0.653}
-DEFAULT_SYSTEMS = ["typesafe-ai/jev-1.13.0:flat", "typesafe-ai/jev-1.13.0:tree", "google/gemini-2.5-flash:paper_llm",
-                   "google/gemini-2.5-flash:paper_llm_thinking", "google/gemini-3.8-flash:paper_llm_low",
-                   "google/gemini-3.8-flash:paper_llm_thinking"]
+# The census: every decision model the gateway listed on 2026-10-25, pinned where a version exists (NOTES.md).
+DECISION_MODELS = ["typesafe-ai/jev-1.13.0", "typesafe-ai/jev-1.14.0", "perplexity/pplx-decider-v1.2",
+                   "perplexity/pplx-decider-flash-v1.2", "openai/gpt-6-luna-decisions", "liquid/d1", "liquid/d1-ultra",
+                   "microsoft/microsoft-decision-1", "baseten/elephant-1", "baseten/mammoth-1",
+                   "scaledown/scaledown-classify-1"]
+LLM_SYSTEMS = ["google/gemini-2.5-flash:paper_llm", "google/gemini-2.5-flash:paper_llm_thinking",
+               "google/gemini-3.8-flash:paper_llm_low", "google/gemini-3.8-flash:paper_llm_thinking"]
+DEFAULT_SYSTEMS = [f"{m}:{me}" for m in DECISION_MODELS for me in ("flat", "tree")] + LLM_SYSTEMS
 
 
 def out_path(model: str, split: str, method: str, perturb: str | None = None) -> Path:
@@ -48,6 +63,8 @@ def read_jsonl(path: Path) -> list[dict]:
 def cmd_run(args) -> None:
     fn, kind, default_model, extra = METHODS[args.method]
     model = args.model or default_model
+    if model is None:
+        raise SystemExit(f"--model is required for --method {args.method} (any decision model, e.g. liquid/d1-ultra)")
     rows = {r["id"]: r for r in load()}
     ids = split_ids(list(rows.values()), args.split)
     if args.perturb:
@@ -189,8 +206,8 @@ def cmd_cascade(args) -> None:
     from .cascade import HEADLINE, curve, summary_stats
 
     expensive = _load_system(args.expensive, args.split)
-    lines = [f"# Cascade: Jev → {args.expensive.split('/')[-1]} on CONFLICTS, split `{args.split}`", "",
-             "Escalate the fraction f of queries with the lowest Jev top probability; escalated queries take the "
+    lines = [f"# Cascade: decision model → {args.expensive.split('/')[-1]} on CONFLICTS, split `{args.split}`", "",
+             "Escalate the fraction f of queries with the decision model's lowest top probability; escalated queries take the "
              "LLM's answer. Thresholds are label-free quantiles. Protocol fixed in NOTES.md before computing.", ""]
     for cheap_spec in args.cheap:
         cheap = _load_system(cheap_spec, args.split)
@@ -202,8 +219,8 @@ def cmd_cascade(args) -> None:
         lines += [f"## Cheap stage: {name} (n = {len(ids)})", "",
                   f"Cheap stage alone {st['acc_cheap']:.3f}; LLM alone {st['acc_expensive']:.3f} at ${st['usd_expensive']:.2f}/1k "
                   f"and {st['lat_expensive']:.2f} s. AUROC of its confidence for it being correct: {st['auroc']:.3f}. "
-                  f"Queries where it is wrong and the LLM right: {st['jev_wrong_llm_right']}; the reverse: "
-                  f"{st['jev_right_llm_wrong']}.", "",
+                  f"Queries where it is wrong and the LLM right: {st['cheap_wrong_llm_right']}; the reverse: "
+                  f"{st['cheap_right_llm_wrong']}.", "",
                   "| f escalated | Accuracy | Random escalation | Cascade − LLM alone [95% CI] | McNemar p | $/1k queries | Cost vs LLM | Latency mean / p95 (s) |",
                   "|---|---|---|---|---|---|---|---|"]
         for r in rows:
@@ -303,7 +320,7 @@ def cmd_diagnose(args) -> None:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(prog="jevconflict")
+    ap = argparse.ArgumentParser(prog="dmconflict")
     sub = ap.add_subparsers(dest="cmd", required=True)
     r = sub.add_parser("run")
     r.add_argument("--method", choices=list(METHODS), required=True)
@@ -318,18 +335,19 @@ def main() -> None:
     e.add_argument("--price-per-m", type=float, default=0.042, help="list price, used only if no billed cost")
     c = sub.add_parser("cascade")
     c.add_argument("--split", choices=["dev", "test", "all"], required=True)
-    c.add_argument("--cheap", nargs="+", default=["typesafe-ai/jev-1.13.0:flat", "typesafe-ai/jev-1.13.0:tree_v2"])
+    c.add_argument("--cheap", nargs="+", default=[f"{m}:flat" for m in DECISION_MODELS])
     c.add_argument("--expensive", default="google/gemini-3.8-flash:paper_llm_low")
     mp = sub.add_parser("make-plants")
     mp.add_argument("--split", choices=["dev", "test", "all"], default="test")
     d = sub.add_parser("diagnose")
     d.add_argument("--split", choices=["dev", "test", "all"], default="test")
-    d.add_argument("--systems", nargs="+", default=["typesafe-ai/jev-1.13.0:flat", "typesafe-ai/jev-1.13.0:tree",
-                                                    "typesafe-ai/jev-1.13.0:tree_v2",
-                                                    "google/gemini-3.8-flash:paper_llm_low"])
+    d.add_argument("--systems", nargs="+",
+                   default=[f"{m}:flat" for m in DECISION_MODELS] + ["google/gemini-3.8-flash:paper_llm_low"])
+    from .endtoend import add_commands
+    end_to_end = add_commands(sub)
     args = ap.parse_args()
     {"run": cmd_run, "evaluate": cmd_evaluate, "cascade": cmd_cascade,
-     "make-plants": cmd_make_plants, "diagnose": cmd_diagnose}[args.cmd](args)
+     "make-plants": cmd_make_plants, "diagnose": cmd_diagnose, **end_to_end}[args.cmd](args)
 
 
 if __name__ == "__main__":

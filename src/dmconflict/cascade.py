@@ -1,7 +1,8 @@
 """Confidence-gated cascade, computed offline from stored answers (protocol in NOTES.md).
 
-Jev answers every query; the fraction f with the lowest Jev confidence is escalated to the LLM,
-whose answer replaces Jev's. The threshold is a quantile of Jev's confidences, so it uses no
+The decision model answers every query; the fraction f with its lowest confidence is escalated to
+the LLM, whose answer replaces the decision model's. The threshold is a quantile of the decision
+model's confidences, so it uses no
 labels and the curve can be computed on the evaluation split itself.
 """
 
@@ -66,5 +67,5 @@ def summary_stats(cheap: list[dict], expensive: list[dict]) -> dict:
     return {"auroc": auroc(conf, ok_c), "acc_cheap": float(ok_c.mean()), "acc_expensive": float(ok_e.mean()),
             "usd_expensive": 1000 * float(np.mean([r["cost_usd"] or 0.0 for r in expensive])),
             "lat_expensive": float(np.mean([r["latency_s"] or 0.0 for r in expensive])),
-            # Where escalation can help at all: Jev wrong and the LLM right.
-            "jev_wrong_llm_right": int((~ok_c & ok_e).sum()), "jev_right_llm_wrong": int((ok_c & ~ok_e).sum())}
+            # Where escalation can help at all: the decision model wrong and the LLM right.
+            "cheap_wrong_llm_right": int((~ok_c & ok_e).sum()), "cheap_right_llm_wrong": int((ok_c & ~ok_e).sum())}
