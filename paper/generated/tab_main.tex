@@ -1,24 +1,30 @@
 \begin{table*}[t]
-\centering\small
-\fitwidth{\begin{tabular}{lccccc}
+\centering\small\setlength{\tabcolsep}{4.5pt}
+\fitwidth{\begin{tabular}{lccccccc}
 \toprule
-System & Accuracy [95\% CI] & Macro-F1 & ECE & \$ / 1k queries & Latency (s) \\
+System & Accuracy [95\% CI] & Macro-F1 & ECE & \$ / 1k & Lat.\ (s) & $\Delta$ Gem.\ 2.5 ($p$) & $\Delta$ Gem.\ 3.8 ($p$) \\
 \midrule
-\multicolumn{6}{l}{\emph{Decision model (one forward pass)}} \\
-\quad Jev 1.13, flat & 61.8 [56.9, 66.5] & 54.9 & 0.103 & 0.19 & 0.26 \\
-\quad Jev 1.13, tree v1 & 47.3 [42.4, 52.0] & 29.3 & 0.153 & 0.18 & 0.25 \\
-\quad Jev 1.13, tree v2$^\dagger$ & 63.5 [58.9, 68.2] & 45.9 & 0.026 & 0.18 & 0.25 \\
-\quad Jev 1.14, flat & 59.6 [54.7, 64.5] & 53.3 & 0.113 & 0.19 & 0.28 \\
-\quad Jev 1.14, tree v2$^\dagger$ & 62.8 [58.1, 67.5] & 45.7 & 0.031 & 0.18 & 0.27 \\
-\multicolumn{6}{l}{\emph{Generative LLM, paper's prompt}} \\
-\quad Gemini 2.5 Flash, thinking off & 61.3 [56.7, 66.0] & 53.1 & -- & 1.66 & 1.55 \\
-\quad Gemini 2.5 Flash, thinking on & 57.9 [53.0, 62.8] & 51.4 & -- & 6.04 & 9.57 \\
-\quad Gemini 3.8 Flash, thinking low & 70.0 [65.5, 74.4] & 61.3 & -- & 3.65 & 2.18 \\
-\quad Gemini 3.8 Flash, default thinking & 66.7 [62.1, 71.2] & 59.4 & -- & 5.51 & 5.01 \\
+\multicolumn{8}{l}{\emph{Decision models, flat question (one forward pass)}} \\
+\quad Liquid d1 Ultra & 67.0 [62.3, 71.4] & 53.5 & 0.044 & 0.18 & 0.46 & +5.7 (0.027) & $-$3.0 (0.22) \\
+\quad Perplexity Decider v1.2 & 66.7 [62.1, 71.2] & 56.5 & 0.061 & 0.09 & 0.42 & +5.4 (0.049) & $-$3.2 (0.14) \\
+\quad OpenAI GPT-6 Luna Decisions & 66.3 [61.6, 70.9] & 54.7 & 0.059 & 0.41 & 0.35 & +4.9 (0.090) & $-$3.7 (0.13) \\
+\quad Baseten Mammoth-1 & 65.8 [61.1, 70.4] & 52.9 & 0.052 & 0$^\P$ & 0.59 & +4.4 (0.10) & $-$4.2 (0.050) \\
+\quad Baseten Elephant-1 & 65.3 [60.8, 69.7] & 51.6 & 0.040 & 0$^\P$ & 0.48 & +3.9 (0.16) & $-$4.7 (0.040) \\
+\quad Liquid d1 & 62.6 [57.6, 67.2] & 51.5 & 0.075 & 0.08 & 0.41 & +1.2 (0.71) & $-$7.4 (0.002) \\
+\quad Jev 1.13 & 61.8 [56.9, 66.5] & 54.9 & 0.103 & 0.19 & 0.26 & +0.5 (0.92) & $-$8.1 ({<}0.001) \\
+\quad Perplexity Decider Flash v1.2 & 61.8 [57.1, 66.5] & 49.4 & 0.031 & 0.04 & 0.31 & +0.5 (0.93) & $-$8.1 ({<}0.001) \\
+\quad Jev 1.14 & 59.6 [54.7, 64.5] & 53.3 & 0.113 & 0.19 & 0.28 & $-$1.7 (0.56) & $-$10.3 ({<}0.001) \\
+\quad Microsoft Decision-1 & 58.1 [53.2, 62.8] & 50.2 & 0.188 & 0.18 & 0.45 & $-$3.2 (0.24) & $-$11.8 ({<}0.001) \\
+\quad ScaleDown Classify-1$^\S$ & 50.0 [45.1, 54.9] & 37.4 & 0.090 & 0.24 & 0.72 & $-$11.3 ({<}0.001) & $-$20.0 ({<}0.001) \\
+\multicolumn{8}{l}{\emph{Generative LLMs, the paper's prompt}} \\
+\quad Gemini 2.5 Flash, thinking off & 61.3 [56.7, 66.0] & 53.1 & -- & 1.66 & 1.55 & -- & $-$8.6 ({<}0.001) \\
+\quad Gemini 2.5 Flash, thinking on & 57.9 [53.0, 62.8] & 51.4 & -- & 6.04 & 9.57 & $-$3.4 (0.19) & $-$12.1 ({<}0.001) \\
+\quad Gemini 3.8 Flash, thinking low & 70.0 [65.5, 74.4] & 61.3 & -- & 3.65 & 2.18 & +8.6 ({<}0.001) & -- \\
+\quad Gemini 3.8 Flash, default thinking & 66.7 [62.1, 71.2] & 59.4 & -- & 5.51 & 5.01 & +5.4 (0.043) & $-$3.2 (0.019) \\
 \midrule
-\quad Gemini 2.5 Flash, as published$^\ddagger$ & 65.3 & -- & -- & -- & -- \\
+\quad Gemini 2.5 Flash, as published$^\ddagger$ & 65.3 & -- & -- & -- & -- & -- & -- \\
 \bottomrule
 \end{tabular}}
-\caption{Conflict-type classification on the CONFLICTS test split ($n=406$), five classes. All systems see identical inputs; the LLMs receive the paper's prompt verbatim and Jev's \emph{flat} question carries the same instructions, definitions and examples. Cost is billed cost through one gateway; latency is the mean per query. ECE is undefined for hard-label systems. $^\dagger$Combination order revised on the development split (\S\ref{sec:formulation}). $^\ddagger$Reported by \citet{cattan2025dragged} on all 458 queries; not comparable query by query.}
+\caption{Conflict-type classification on the \conflicts test split ($n=406$), five classes, sorted by accuracy. Every system sees the same inputs; the LLMs receive the paper's prompt verbatim and the decision models a choice question with the same instructions, definitions and examples. Cost: billed cost per 1,000 queries through one gateway (USD). Latency: mean per query. ECE is undefined for text answers. $\Delta$: accuracy difference in points from Gemini~2.5 Flash (thinking off, the paper's setup) and from Gemini~3.8 Flash (thinking low), exact McNemar $p$. $^\S$Its API accepts only a single text field, so it receives the same content as one text (the LLMs' numbered results). $^\P$Free on the gateway at the time of the runs (billed \$0). $^\ddagger$Reported by \citet{cattan2025dragged} on all 458 queries; not comparable query by query.}
 \label{tab:main}
 \end{table*}

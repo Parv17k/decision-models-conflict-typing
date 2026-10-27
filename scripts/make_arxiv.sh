@@ -20,13 +20,17 @@ rm -rf "$SRC" && mkdir -p "$SRC/sections" "$SRC/generated" "$SRC/figures"
 cp "$ROOT/paper/tacl2021v1.sty" "$ROOT/paper/acl_natbib.bst" "$ROOT/paper/refs.bib" "$SRC/"
 cp "$ROOT"/paper/sections/*.tex "$SRC/sections/"
 cp "$ROOT"/paper/generated/*.tex "$ROOT"/paper/generated/*.txt "$SRC/generated/"
-cp "$ROOT/paper/figures/cascade_cost_accuracy.pdf" "$SRC/figures/"
+cp "$ROOT/paper/figures/cascade_cost_accuracy.pdf" "$ROOT/paper/figures/overview.tex" "$SRC/figures/"
 # The arXiv main.tex is the paper's main.tex with \arxivversion defined on its first line.
 { echo '\def\arxivversion{}'; cat "$ROOT/paper/main.tex"; } > "$SRC/main.tex"
 
+# arXiv publishes the source: remove comment text (keeping each % so line endings behave the same).
+"$ROOT/.venv/bin/python" "$ROOT/scripts/strip_tex_comments.py" "$SRC"
+# The .bbl below is what arXiv uses; the .bib is not needed in the upload.
+
 cd "$SRC"
 pdflatex -interaction=nonstopmode main >/dev/null 2>&1 || true
-bibtex main >/dev/null
+bibtex main >/dev/null || { echo "bibtex failed (see arxiv/source/main.blg and main.log)"; exit 1; }
 pdflatex -interaction=nonstopmode main >/dev/null 2>&1 || true
 pdflatex -interaction=nonstopmode main > build.log 2>&1 || true
 if grep -qE "^! " build.log; then grep -E "^! " build.log; echo "build failed"; exit 1; fi
@@ -36,7 +40,7 @@ fi
 TODOS="$(grep -n '\\todo{' main.tex sections/*.tex | grep -v 'newcommand' || true)"
 if [ -n "$TODOS" ]; then echo "WARNING: placeholders remain (orange [TODO] text in the PDF):"; echo "$TODOS"; fi
 cp main.pdf "$OUT/preprint.pdf"
-rm -f build.log main.aux main.blg main.log main.out main.pdf missfont.log
+rm -f build.log main.aux main.blg main.log main.out main.pdf missfont.log refs.bib
 
 tar -czf "$OUT/arxiv_source.tar.gz" -C "$SRC" .
 "$ROOT/.venv/bin/python" "$ROOT/scripts/arxiv_metadata.py" > "$OUT/metadata.txt"

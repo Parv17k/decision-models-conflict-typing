@@ -1,0 +1,8 @@
+You are checking whether a response contains the correct answer to a question.
+
+QUESTION: {query}
+CORRECT ANSWER: {gold answer}
+RESPONSE: {response}
+
+Does the response state the correct answer? Count paraphrases, equivalent formats and answers with more detail as correct; the response may also mention other information.
+Reply with a JSON object: {"explanation": "<one sentence>", "includes_answer": true or false}

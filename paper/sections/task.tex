@@ -8,8 +8,9 @@ underspecified); \emph{Conflicting opinions or research outcomes} (a subjective 
 opposing views); \emph{Outdated information} (a factual question on which sources disagree because the answer
 changed over time); and \emph{Misinformation} (a factual question on which some sources are wrong).
 
-\paragraph{Data.} \conflicts contains \nall queries drawn from five QA datasets
-\citep{wan2024evidence,zhang2021situatedqa,vu2023freshllms,liu2024qacc}, each with the top Google Search results
+\paragraph{Data.} \conflicts contains \nall queries drawn from ConflictingQA
+\citep{wan2024evidence}, the geographic and temporal subsets of SituatedQA \citep{zhang2021situatedqa}, FreshQA
+\citep{vu2023freshllms} and QACC \citep{liu2024qacc}, each with the top Google Search results
 (\avgresults on average), the conflict type assigned by expert annotators, and, for the types with a single correct
 answer, that answer. Each result carries a URL, title, snippet, publication date when available, and the
 512-token segment of the page most relevant to the query. The released file has no split. We draw a stratified

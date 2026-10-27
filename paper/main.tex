@@ -6,6 +6,7 @@
 \usepackage{times,latexsym}
 \usepackage{url}
 \makeatletter\g@addto@macro{\UrlBreaks}{\UrlOrds}\makeatother   % let long URLs break anywhere
+\Urlmuskip=0mu plus 1mu   % let URLs stretch so justified lines before them are not underfull
 \usepackage[T1]{fontenc}
 \renewcommand{\ttdefault}{lmtt}   % Latin Modern mono: no dependency on the Courier fonts
 % Three builds from this one source (see README.md):
@@ -15,12 +16,15 @@
 \ifdefined\taclfinal\def\taclauthors{}\fi
 \ifdefined\arxivversion\def\taclauthors{}\fi
 \ifdefined\taclauthors\usepackage[acceptedWithA]{tacl2021v1}\else\usepackage{tacl2021v1}\fi
-% Four authors in two rows need more than the style's default 5 cm title box (its own advice:
-% set \titlebox right after loading the style). Not needed for the anonymous submission.
+% The author block needs more than the style's default 5 cm title box (its own advice: set \titlebox right
+% after loading the style). Not needed for the anonymous submission.
 \ifdefined\taclauthors\setlength\titlebox{6.5cm}\fi
+% PDF metadata: title always; authors only in the builds that show them.
+\hypersetup{pdftitle={Do We Need an LLM to Know Why Sources Conflict? Decision Models for Knowledge-Conflict Typing in RAG}}
+\ifdefined\taclauthors\hypersetup{pdfauthor={Parv Khatri, Harshul Jain, Mehak Kapoor, Tanya Sah}}\fi
 % Code release: linked only in the versions that show authors (arXiv, camera-ready). The anonymous
 % TACL submission may not link to code, so it only says that everything is released.
-\newcommand{\repourl}{https://github.com/Parv17k/jev-conflict-classifier}
+\newcommand{\repourl}{https://github.com/Parv17k/decision-models-conflict-typing}
 \ifdefined\taclauthors\newcommand{\releasenote}{ at \url{\repourl}}\else\newcommand{\releasenote}{}\fi
 \usepackage{xspace}
 \xspaceaddexceptions{\% $ ] ) / , ;}   % no space between a generated number and %, $, brackets or punctuation
@@ -28,6 +32,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{xcolor}
+\usepackage{tikz}
 \usepackage{listings}
 
 \lstset{basicstyle=\scriptsize\ttfamily,breaklines=true,breakatwhitespace=true,columns=fullflexible,
@@ -35,27 +40,29 @@
 % Shrink a table to the line width only if it is wider (graphicx only; no adjustbox in BasicTeX).
 \newsavebox{\fitbox}
 \newcommand{\fitwidth}[1]{\sbox{\fitbox}{#1}\ifdim\wd\fitbox>\linewidth\typeout{FITWIDTH scaled \the\wd\fitbox\space to \the\linewidth}\resizebox{\linewidth}{!}{\usebox{\fitbox}}\else\usebox{\fitbox}\fi}
+% References ragged-right: in a justified narrow column, long URLs otherwise stretch with visible gaps.
+\makeatletter\let\dm@thebibliography\thebibliography
+\renewcommand{\thebibliography}[1]{\dm@thebibliography{#1}\raggedright}\makeatother
 \newcommand{\todo}[1]{\textcolor{orange!80!black}{[TODO: #1]}}
 \newcommand{\jev}{Jev\xspace}
 \newcommand{\conflicts}{\textsc{Conflicts}\xspace}
 
 \input{generated/numbers}
 
-\title{Fast Judgments on Conflicting Sources: The Typed Decision Model Jev\\
-as a Knowledge-Conflict Classifier for Retrieval-Augmented Generation}
+\title{Do We Need an LLM to Know Why Sources Conflict?\\
+Decision Models for Knowledge-Conflict Typing in RAG}
 
-% TACL author block, Option 1 (address under each name), three per row. Author order: Parv Khatri
-% (first and lead author), Harshul Jain, Tanmay Sah, Mehak Kapoor, Tanya Sah.
+% TACL author block, Option 1 (address under each name), two rows of two. Author order: Parv Khatri
+% (first and lead author), Harshul Jain, Mehak Kapoor, Tanya Sah.
+\newcommand{\authoremail}[1]{{\small\texttt{#1}}}
 \author{
-  Parv Khatri \\ Independent Researcher \\ \texttt{khatriparv@gmail.com}
+  Parv Khatri \\ Independent Researcher \\ \authoremail{khatriparv@gmail.com}
   \And
-  Harshul Jain \\ Independent Researcher \\ \texttt{harshuljain1393@gmail.com}
-  \And
-  Tanmay Sah \\ Independent Researcher \\ \texttt{tradertanmay@gmail.com}
+  Harshul Jain \\ Independent Researcher \\ \authoremail{harshuljain1393@gmail.com}
   \AND
-  Mehak Kapoor \\ Independent Researcher \\ \texttt{mehakkapoor9873@gmail.com}
+  Mehak Kapoor \\ Independent Researcher \\ \authoremail{mehakkapoor9873@gmail.com}
   \And
-  Tanya Sah \\ Independent Researcher \\ \texttt{tanyasah20@gmail.com}
+  Tanya Sah \\ Independent Researcher \\ \authoremail{tanyasah20@gmail.com}
 }
 
 \date{}

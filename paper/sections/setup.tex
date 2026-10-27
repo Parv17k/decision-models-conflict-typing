@@ -3,29 +3,39 @@
 
 \paragraph{Inputs.} Every system sees the same input. As in \citet{cattan2025dragged}, each search result is the
 concatenation of its URL, title, snippet, publication date (when available) and 512-token segment; results keep the
-dataset's order and are numbered. For \jev they form the state; for the LLMs they fill the paper's prompt.
+dataset's order and are numbered. For the decision models they form the state; for the LLMs they fill the paper's
+prompt.
 
-\paragraph{Decision models.} Our main model is \jev 1.13.0 (\texttt{typesafe-ai/jev-1.13.0}); we report \jev 1.14.0
-as a version-stability check. For context we run the four other decision models served by the same gateway,
-with \jev's questions unchanged and nothing tuned per model: Perplexity decider v1.2, OpenAI GPT-6-luna decisions,
-Liquid d1 and Microsoft decision-1. We did not include the open decision model Laya: its hosted version cannot
-accept the task's question, whose category definitions exceed its input limit, and prior work reports it near
-chance without task-specific training \citep{duan2026general,nandakishore2026laya}.
+\paragraph{Decision models.} We run every model that the Vercel AI Gateway\footnote{\url{https://vercel.com/ai-gateway}} listed as a
+decision model on the day of the census (25 October 2026),
+with a pinned identifier where one exists: \jev~1.13.0 and 1.14.0 \citep{typesafe2026jev}, Decider v1.2 and Decider Flash v1.2
+\citep{perplexity2026decider,perplexity2026deciderflash}, GPT-6 Luna Decisions \citep{openai2026decisions}, d1 and d1
+Ultra \citep{liquid2026d1,liquid2026d1ultra}, Decision-1 \citep{microsoft2026decision}, Elephant-1 and Mammoth-1
+\citep{baseten2026decision}, and Classify-1 \citep{scaledown2026classify}. All receive the questions of \S\ref{sec:method} unchanged.
+Classify-1's API accepts only a single text field, so it receives the same content as one text, the numbered
+results exactly as the LLMs see them. Two entries were excluded before any run. Laya, the only open decision model
+served by the gateway, cannot accept the task's question, whose category definitions exceed its input limit; prior
+work reports it near chance without task-specific training \citep{duan2026general,nandakishore2026laya}.
+\texttt{typesafe-ai/jev} is a floating alias of a pinned version we already run. Open-weight models that the gateway
+does not serve are out of scope: their cost and latency would depend on local hardware and not be comparable.
 
-\paragraph{LLM baselines.} We rerun the paper's best classifier, Gemini~2.5 Flash, with the paper's prompt
+\paragraph{LLM baselines.} We rerun the paper's best classifier, Gemini~2.5 Flash \citep{comanici2025gemini}, with the paper's prompt
 verbatim, temperature 0, thinking off (the paper lists Gemini 2.5 Flash and its thinking variant separately) and,
 as a sensitivity check, thinking on. To compare against a current model we add Gemini~3.8 Flash, the newest Flash
 model available to us, at its lowest thinking level (it cannot be switched off) and at its default. The prompt asks
-for JSON with an explanation and a category number; answers stating the category in another format (\nlenient of \ngemini)
-are parsed leniently rather than counted as errors. All models are reached through one gateway, which reports the
-billed cost of every request; latency is the wall-clock time of the successful request.
+for JSON with an explanation and a category number; answers stating the category in another format (\nlenient of
+\ngemini) are parsed leniently rather than counted as errors. All models are reached through this gateway, which reports the billed cost of every request (prices may
+differ from the providers' own APIs); latency is the wall-clock time of the successful request.
 
 \paragraph{Protocol.} Prompts, questions, inputs and the development/test split were frozen before any test-set
 call, with file hashes recorded. The only setting chosen by inspecting data is tree v2, chosen on the development
-split and marked $\dagger$ in all tables. Every later addition (Gemini~3.8 Flash, \jev 1.14, the other decision
-models, the cascade and the diagnostics) was specified in writing before it was run, and every run was reported.
+split and marked $\dagger$ in all tables. Every later addition (Gemini~3.8 Flash, the further decision models, the
+cascade, the diagnostics and the end-to-end test) was specified in writing before it was run, and every run is reported
+(Appendix~\ref{app:protocol}).
 
 \paragraph{Statistics.} Comparisons are paired on identical queries. We report 95\% bootstrap intervals over queries
 \citep{efron1994bootstrap} (10,000 resamples) and two-sided exact McNemar tests \citep{mcnemar1947} on per-query
 correctness. With \ntest test queries, a 95\% interval on accuracy is about $\pm$\cihalf points wide, so differences
-under about five points are generally not significant; we report them as ties, not as wins.
+under about five points are generally not significant; we report them as ties. We do not correct for multiple
+comparisons; with \ndm models a few nominal differences at $p<0.05$ are expected by chance, so we draw conclusions
+from patterns across models rather than from single tests.

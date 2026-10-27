@@ -2,8 +2,8 @@
 
 Target: *Transactions of the ACL*, regular paper. Template `tacl2021v1.sty` + `acl_natbib.bst`, the
 official files from https://transacl.org/tacl-submission-templates/ (still the latest, Dec 2021; the
-copy on direct.mit.edu is the older 2018 version). `official/` keeps the untouched template, sample
-.bib and the submission and final-version formatting instructions.
+copy on direct.mit.edu is the older 2018 version). The untouched template, sample .bib and the submission and
+final-version formatting instructions are not redistributed here; download them from that page.
 
 Length rules (TACL announcement of 2024-02-16, effective 2024-03-01, which supersedes the template's
 "appendices count" rule): 10 pages of content; references don't count; appendices go after the
@@ -15,12 +15,12 @@ appendices beyond replication details; appendices are not reviewed.
 
 ```bash
 .venv/bin/python scripts/make_tables.py        # from the project root: tables + numbers from the stored runs
-.venv/bin/python scripts/plot_cascade.py && cp figures/cascade_cost_accuracy.pdf paper/figures/
+.venv/bin/python scripts/plot_cascade.py                  # also writes paper/figures/cascade_cost_accuracy.pdf
 cd paper && pdflatex main && bibtex main && pdflatex main && pdflatex main
 ```
 
 No number in the text is typed by hand: tables come from `generated/tab_*.tex`, numbers from
-`generated/numbers.tex` (macros such as `\jevacc`), prompts from `generated/*.txt`.
+`generated/numbers.tex` (macros such as `\dmaccmax`), prompts from `generated/*.txt`.
 
 ## Three versions from one source
 
@@ -31,11 +31,11 @@ No number in the text is typed by hand: tables come from `generated/tab_*.tex`, 
 | arXiv preprint | `scripts/make_arxiv.sh` (from the project root) | authors, no line numbers or header |
 
 `scripts/make_arxiv.sh` writes `arxiv/arxiv_source.tar.gz` (the upload, with the pre-built `.bbl`
-arXiv needs), `arxiv/preprint.pdf` (what arXiv should produce) and `arxiv/metadata.txt` (title,
+arXiv needs and LaTeX comments stripped, since arXiv publishes the source), `arxiv/preprint.pdf` (what arXiv should produce) and `arxiv/metadata.txt` (title,
 authors, plain-text abstract, categories). It stops on any LaTeX error or unresolved reference and
 warns about remaining `\todo` placeholders.
 
-Authors, in order: Parv Khatri (first and lead author), Harshul Jain, Tanmay Sah, Mehak Kapoor, Tanya Sah.
+Authors, in order: Parv Khatri (first and lead author), Harshul Jain, Mehak Kapoor, Tanya Sah.
 
 ## Fonts
 
@@ -50,7 +50,7 @@ tlmgr init-usertree && tlmgr --usermode install helvetic courier
 
 - Re-check https://transacl.org/index.php/tacl/about/submissions for rule changes.
 - For each cited preprint, check whether a peer-reviewed version has appeared (a listed TACL desk-reject reason).
-- Remove author names from the PDF's Document Properties (currently empty) and name the file
+- The anonymous build sets only the PDF title, no authors (checked). Name the file
   `<submission number>-<1-3 title words>.pdf`.
 - No supplementary material or links to it: state anonymously that code and data will be released.
 - Authors stay anonymous in the submission format; switch to `\usepackage[acceptedWithA]{tacl2021v1}` for the final version.

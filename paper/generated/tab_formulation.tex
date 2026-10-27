@@ -1,0 +1,22 @@
+\begin{table}[t]
+\centering\footnotesize\setlength{\tabcolsep}{3.5pt}
+\fitwidth{\begin{tabular}{lcccc}
+\toprule
+Decision model & Flat & Tree v1 & Tree v2$^\dagger$ & v2 $-$ flat ($p$) \\
+\midrule
+Liquid d1 Ultra & 67.0 & 50.2 & 62.8 & $-$4.2 (0.10) \\
+Perplexity v1.2 & 66.7 & 56.9 & 69.0 & +2.2 (0.23) \\
+GPT-6 Luna & 66.3 & 42.1 & 50.0 & $-$16.3 ({<}0.001) \\
+Mammoth-1 & 65.8 & 48.3 & 59.1 & $-$6.7 (0.008) \\
+Elephant-1 & 65.3 & 47.0 & 59.4 & $-$5.9 (0.009) \\
+Liquid d1 & 62.6 & 44.8 & 58.4 & $-$4.2 (0.13) \\
+Jev 1.13 & 61.8 & 47.3 & 63.5 & +1.7 (0.59) \\
+Perplexity Flash v1.2 & 61.8 & 46.6 & 59.1 & $-$2.7 (0.29) \\
+Jev 1.14 & 59.6 & 45.1 & 62.8 & +3.2 (0.29) \\
+Microsoft D-1 & 58.1 & 41.1 & 57.4 & $-$0.7 (0.86) \\
+ScaleDown C-1$^\S$ & 50.0 & 37.2 & 39.9 & $-$10.1 (0.001) \\
+\bottomrule
+\end{tabular}}
+\caption{Accuracy (\%) by question format on the test split. The yes/no questions are identical for every model and asked in one request. $^\dagger$Combination order revised on one model's (Jev~1.13) development answers (\S\ref{sec:formulation}). $^\S$Its API accepts only a single text field, so it receives the same content as one text (the LLMs' numbered results).}
+\label{tab:formulation}
+\end{table}

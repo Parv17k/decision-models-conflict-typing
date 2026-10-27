@@ -1,40 +1,42 @@
 \section{Discussion}
 \label{sec:discussion}
 
-\paragraph{What \jev offers as a conflict classifier.} Conflict typing sits on the critical path of every
-search-augmented answer, so its latency and cost add to every request. \jev classifies a query with about ten
-retrieved pages in \jevlat\,s for \$\jevcost per thousand queries, with the accuracy of the LLM used in the
-original study. That makes conflict typing affordable as an always-on step. When the accuracy of a
-current LLM is required, \jev's confidence is good enough to route only its uncertain queries to the LLM, which
-recovers most of the gap at under a third of the LLM's cost. The probabilities have a second use: a system that
-receives a distribution over conflict types can hedge between expected behaviours when two types are close, which
-a hard label does not allow.
+\paragraph{What decision models offer as conflict classifiers.} Conflict typing sits on the critical path of every
+search-augmented answer, so its latency and cost add to every request. Most hosted decision models classify a query
+with about ten retrieved pages in under half a second, for at most \$\dmcostmax per thousand queries, with the accuracy of the LLM used in the original study. When the accuracy of a
+current LLM is required, a decision model's confidence is usually good enough to route only its uncertain queries to
+the LLM, which recovers most of the gap at a quarter to a third of the LLM's cost. End to end, the cheaper types cost
+no measurable answer quality (\S\ref{sec:endtoend}). 
 
-\paragraph{How to ask.} The direct choice question was the most robust format. The yes/no decomposition looked
-natural but inherited \jev's yes-bias; the repaired tree is better calibrated but encodes choices fitted to \jev on
-a small development split, and it did not carry over to four other decision models. For a new decision model we
-would start from the flat question.
+\paragraph{Choosing among decision models.} The class is not uniform. Accuracy spans \dmaccmin--\dmaccmax\%, and the
+model at the bottom is significantly worse than the paper's LLM. Two properties that matter in deployment vary
+independently of accuracy: calibration (ECE \eceminimum--\ecemaximum) and how well confidence ranks errors, which
+decides whether a cascade helps at all. One of the most accurate models has confidence that is no better than random for
+escalation. A model for this task should therefore be chosen on all three, measured on the deployment's own data,
+not on accuracy alone.
 
-\paragraph{What the diagnostics change.} Two widely reported weaknesses of decision models predicted specific
-failures here, and neither appeared. Date handling, a documented weakness of \jev, turned out to be irrelevant
-because outdated sources are recognised from their content. Order sensitivity is real, but the LLM shares it. The
-planted-source test shows that one contradicting page out of about ten is noticed as reliably by \jev as by the LLM,
-at the cost of more false alarms that a threshold can control. Conflict typing therefore does not inherit these
-weaknesses in the way one might fear; it does inherit the general limit that decision models are weaker on long
-inputs \citep{duan2026general}, and our inputs are long.
+\paragraph{How to ask.} The direct choice question was the reliable format for every model. The yes/no
+decomposition looked natural but failed for all of them; the repaired tree encodes choices fitted to one model on a
+small development split and did not help any other. For a new decision model we would start from the flat
+question.
 
-\paragraph{\jev among decision models.} \jev is not the most accurate decision model on this task. Perplexity's
-decider is significantly more accurate and, with the tree question, ties the current LLM. \jev's advantages are
-speed, the strongest \emph{Outdated} recall, and well-behaved confidence for escalation. Since every decision model
-accepted \jev's questions unchanged, practitioners can swap models without changing the pipeline.
+\paragraph{What the diagnostics change.} Dates turned out not to matter: outdated sources are recognised
+from their content. Sensitivity to source order is real but differs so much between models that it has to be
+measured for each one. A single false source is the subtle case, visible in the probabilities but rarely in the
+top label. With
+\nmisitest natural \emph{Misinformation} test queries, that type is the one a deployment would most need to
+calibrate on its own data.
 
 \paragraph{Limitations.}
 (i) \conflicts is small: with \ntest test queries, differences under about five points are not significant, and the
-cascade can be shown close to, but not formally equivalent to, the LLM. (ii) The label distribution reflects how the
+cascades can be shown close to, but not formally equivalent to, the LLM. (ii) The label distribution reflects how the
 queries were selected, not real search traffic, and the dataset has only five natural \emph{Misinformation}
 queries; our planted variant tests one kind of misinformation (an entity or value substituted in a single source).
-(iii) Hosted models change without notice; three of the decision models have unversioned identifiers, and our rerun
-of Gemini~2.5 Flash scores below the published figure. We release all outputs so that results can be checked without
-rerunning them. (iv) We evaluate classification only; we do not measure whether a predicted type improves the final
-answer, which \citet{cattan2025dragged} established for the gold type. (v) Neither the decision models nor the LLMs
-were deterministic: identical requests changed 2--3\% of predictions.
+(iii) The census covers the decision models one gateway served on one day. Hosted models change without notice:
+several identifiers are unversioned, two models were free during our runs, and our rerun of Gemini~2.5 Flash scores
+below the published figure. Providers
+do not disclose model sizes or training data, so we cannot explain the differences between models. (iv) The end-to-end test uses one generator and LLM judges, validated on \nvalid answers, that do not see the
+search results; as in the original study, the primary judge is the generator's own model, which may favour its
+answers \citep{panickssery2024llm}. The size of the gain from predicted types depends on the judge, and we do not
+measure factual grounding, the third metric of \citet{cattan2025dragged}. (v) Not every system is deterministic: identical requests changed
+up to \rerunflipmax\% of a decision model's predictions, and \diaggmrerunflip\% of Gemini~3.8 Flash's.

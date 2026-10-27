@@ -1,20 +1,26 @@
 \begin{table*}[t]
 \centering\footnotesize\setlength{\tabcolsep}{4pt}
-\fitwidth{\begin{tabular}{lccccccccc}
+\fitwidth{\begin{tabular}{lccccccc}
 \toprule
- & \multicolumn{3}{c}{Jev flat} & \multicolumn{3}{c}{Jev tree v2$^\dagger$} & \multicolumn{3}{c}{Gemini 3.8} \\
-\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
-Perturbation & $\Delta$Acc ($p$) & Flip & Outd. & $\Delta$Acc ($p$) & Flip & Outd. & $\Delta$Acc ($p$) & Flip & Outd. \\
+ & Rerun & \multicolumn{3}{c}{Dates} & \multicolumn{3}{c}{Source order} \\
+\cmidrule(lr){3-5}\cmidrule(lr){6-8}
+System & Flip & No dates & Recency in code & Outd.\ recall & Flip [95\% CI] & Shuffle 1 & Shuffle 2 \\
 \midrule
-Rerun & $-$0.5 (0.69) & 2.0 & 74.5 & $-$0.2 (1.00) & 2.5 & 20.0 & +1.2 (0.27) & 3.4 & 72.7 \\
-No dates & $-$1.0 (0.34) & 3.0 & 74.5 & +0.0 (1.00) & 3.4 & 20.0 & $-$0.7 (0.51) & 2.7 & 67.3 \\
-Recency in code & +0.2 (1.00) & 3.4 & 76.4 & +0.2 (1.00) & 3.7 & 21.8 & $-$0.7 (0.65) & 5.7 & 72.7 \\
-Shuffle, seed 1 & +1.5 (0.38) & 11.1 & 72.7 & $-$1.5 (0.33) & 9.9 & 18.2 & $-$0.5 (0.85) & 8.4 & 74.5 \\
-Shuffle, seed 2 & +0.2 (1.00) & 12.1 & 67.3 & $-$2.2 (0.11) & 8.4 & 18.2 & $-$2.7 (0.09) & 10.3 & 70.9 \\
+Liquid d1 Ultra & 5.2 & +1.0 (0.45) & +0.0 (1.00) & 76.4 / 78.2 & 7.4 [5.7, 9.2] & +1.7 (0.25) & +2.2 (0.12) \\
+Perplexity Decider v1.2 & 0.0 & +0.5 (0.69) & +0.7 (0.51) & 78.2 / 80.0 & 7.0 [5.3, 8.9] & +0.0 (1.00) & +0.0 (1.00) \\
+OpenAI GPT-6 Luna Decisions & 0.0 & $-$0.5 (0.85) & +0.0 (1.00) & 72.7 / 74.5 & 17.9 [15.3, 20.6] & $-$4.7 (0.011) & $-$5.7 (0.006) \\
+Baseten Mammoth-1 & 0.0 & $-$0.2 (1.00) & $-$0.2 (1.00) & 72.7 / 70.9 & 5.4 [3.9, 7.0] & +1.2 (0.27) & +2.2 (0.093) \\
+Baseten Elephant-1 & 0.0 & +0.5 (0.80) & +0.7 (0.55) & 56.4 / 65.5 & 7.3 [5.5, 9.1] & $-$0.7 (0.68) & $-$1.0 (0.48) \\
+Liquid d1 & 9.4 & $-$0.2 (1.00) & $-$0.5 (0.83) & 81.8 / 81.8 & 15.5 [13.1, 18.0] & +0.2 (1.00) & +2.2 (0.25) \\
+Jev 1.13 & 2.0 & $-$1.0 (0.34) & +0.2 (1.00) & 72.7 / 74.5 & 11.6 [9.4, 13.8] & +1.5 (0.38) & +0.2 (1.00) \\
+Perplexity Decider Flash v1.2 & 0.0 & +0.0 (1.00) & +0.5 (0.79) & 58.2 / 61.8 & 11.7 [9.6, 13.9] & +1.0 (0.60) & +0.2 (1.00) \\
+Jev 1.14 & 3.0 & +0.0 (1.00) & +1.0 (0.39) & 76.4 / 76.4 & 10.8 [8.7, 12.9] & +1.0 (0.60) & +0.0 (1.00) \\
+Microsoft Decision-1 & 1.5 & $-$0.7 (0.58) & $-$0.2 (1.00) & 69.1 / 67.3 & 17.2 [14.7, 20.0] & +0.2 (1.00) & +0.7 (0.78) \\
+ScaleDown Classify-1$^\S$ & 8.4 & $-$2.5 (0.25) & $-$1.5 (0.52) & 20.0 / 25.5 & 42.1 [38.8, 45.4] & $-$3.0 (0.32) & +1.0 (0.78) \\
 \midrule
-Original Outd.\ recall & \multicolumn{3}{c}{72.7} & \multicolumn{3}{c}{20.0} & \multicolumn{3}{c}{69.1} \\
+Gemini 3.8 Flash (low) & 3.4 & $-$0.7 (0.51) & $-$0.7 (0.65) & 69.1 / 67.3 & 9.4 [7.5, 11.5] & $-$0.5 (0.85) & $-$2.7 (0.090) \\
 \bottomrule
 \end{tabular}}
-\caption{Diagnostics on the test split. Each perturbed run is compared with the same system's original run. $\Delta$Acc: accuracy change in points (exact McNemar $p$). Flip: share of queries whose predicted type changed (\%). Outd.: recall (\%) on the 55 \emph{Outdated} queries after the perturbation. The identical rerun is the noise floor. $^\dagger$Revised on development data.}
+\caption{Diagnostics on the test split, flat question. Each perturbed run is compared with the same system's original run on the same queries. Flip: share of queries whose predicted type changed (\%); for source order, pooled over two shuffles. No dates, Recency in code, Shuffle: accuracy change in points (exact McNemar $p$). Outd.\ recall: recall (\%) on the 55 \emph{Outdated} queries, original / without dates. The identical rerun is the noise floor. $^\S$Its API accepts only a single text field, so it receives the same content as one text (the LLMs' numbered results).}
 \label{tab:diagnostics}
 \end{table*}

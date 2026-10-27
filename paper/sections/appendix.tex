@@ -2,16 +2,17 @@
 \label{app:prompts}
 
 \paragraph{LLM prompt.} The conflict-type prompt of \citet{cattan2025dragged}, copied from the paper's source with
-only the \LaTeX{} bold markers removed. \texttt{\{search\_results\}} is filled with the numbered results.
+only the \LaTeX{} bold markers removed. The asterisks are the prompt's own Markdown emphasis and were sent
+as written. \texttt{\{search\_results\}} is filled with the numbered results.
 
 \lstinputlisting{generated/paper_prompt.txt}
 
-\paragraph{\jev, flat.} One choice question. Its instruction is the first paragraph of the prompt above; its options
+\paragraph{Decision models, flat.} One choice question. Its instruction is the first paragraph of the prompt above; its options
 are the five category definitions with their examples, word for word.
 
 \lstinputlisting{generated/flat_question.txt}
 
-\paragraph{\jev, tree.} Five yes/no questions asked in one request over the same state.
+\paragraph{Decision models, tree.} Five yes/no questions asked in one request over the same state.
 
 \lstinputlisting{generated/tree_questions.txt}
 
@@ -21,6 +22,20 @@ and case-insensitively, in the title, snippet and text of one such result chosen
 gold answer is \emph{yes} or \emph{no} are excluded.
 
 \lstinputlisting{generated/wrong_answer_prompt.txt}
+
+\paragraph{End to end: generation.} Vanilla is the answer prompt of \citet{cattan2025dragged} (their Figure~3)
+verbatim. For a type, the line below is inserted before the query; the description is the type's definition and
+expected behaviour from their \S2, with citations and worked examples removed.
+
+\lstinputlisting{generated/type_prompt.txt}
+
+\paragraph{End to end: judges.} The behaviour judge, shown for \emph{Misinformation}; for the other types the
+description and the two examples change. The examples are those of \citet{cattan2025dragged}, Table~3, except for
+\emph{No conflict}, which has none there and for which we wrote one pair. The answer-recall judge follows.
+
+\lstinputlisting{generated/judge_prompt.txt}
+
+\lstinputlisting{generated/recall_prompt.txt}
 
 \section{Protocol Record}
 \label{app:protocol}
@@ -32,5 +47,18 @@ made lenient for category statements outside the requested JSON, applied to stor
 strictly formatted answer changed); (3) Gemini~3.8 Flash added at two thinking levels; (4) the cascade, its
 operating points and its controls; (5) the diagnostics, with one amendment before any planted run: whole-word
 matching and the exclusion of yes/no answers, after substring matching was found to alter unrelated numbers;
-(6) \jev 1.14 and the four other decision models, run with \jev's frozen questions. All runs were reported. Code,
+(6) a second \jev version and four further decision models, run with the frozen questions; (7) the remaining
+five decision models listed by the gateway, completing the census, with the diagnostics extended to every decision
+model's flat question, and one amendment before any run: Classify-1 receives the same content as a single text
+field, which its API requires; (8) the end-to-end test, specified before any generation call: generator, prompts,
+judges, the \nvalid-answer validation sample and its threshold, and a second judge (Gemini~3.8 Flash) to be reported
+with the first. Prompts were checked on the development split for errors only; none was changed after scoring. All
+runs are reported.
+
+\paragraph{Judge validation.} The \nvalid answers were drawn with a fixed seed, 20 per gold type and about half from
+Vanilla, and shown to the annotators with the query, the gold type's description and expected behaviour, and the
+answer, without the judge's verdict or the condition. Annotator 2's sheet showed another item's answer for one item;
+that label is excluded. The primary judge agrees with the annotators' majority (a tie counting as \emph{follows},
+as fixed before labelling) on \eevalacc\%, with annotator 1 on \eevalaccone\% and with annotator 2 on
+\eevalacctwo\%; the second judge on \fbvalacc\%, \fbvalaccone\% and \fbvalacctwo\%. Code,
 splits, prompts, cached responses and per-query outputs are released.

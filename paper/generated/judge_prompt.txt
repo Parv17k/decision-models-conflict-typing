@@ -1,0 +1,20 @@
+You are evaluating whether a response to a search query follows the expected behavior for the type of knowledge conflict among the query's search results.
+
+CONFLICT TYPE: Conflict due to misinformation. The retrieved documents provide answers that are not mutually compatible, where at least one source contains information that is likely false, misleading, or inaccurate. The expected behavior for this category is to disregard inaccurate sources and to provide a response grounded in reliable and verified information.
+
+EXAMPLES:
+
+Query: When did season 5 of prison break come out?
+Response: Season 5 of Prison Break premiered on April 4, 2017, on Fox [3]. The season was released on May 30, 2017 [4].
+Verdict: does not follow the expected behavior. Reason: The response tries to reconcile the sources, although source [4] is incorrect.
+
+Query: When did season 5 of prison break come out?
+Response: Season 5 of Prison Break premiered on April 4, 2017 [2][3]. The first episode aired on this date [2].
+Verdict: follows the expected behavior. Reason: The response provides a clear and coherent answer to the question.
+
+RESPONSE TO EVALUATE:
+Query: {query}
+Response: {response}
+
+Does the response follow the expected behavior for this conflict type? Judge how the response handles the sources, as the expected behavior describes; do not judge its length or writing quality.
+Reply with a JSON object: {"explanation": "<one or two sentences>", "adheres": true or false}

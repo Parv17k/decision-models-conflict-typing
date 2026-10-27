@@ -8,46 +8,57 @@ pages are stale; or a page may simply be wrong. Each case calls for a different 
 present the viewpoints neutrally, prefer the most recent information, or ignore the unreliable source.
 \citet{cattan2025dragged} formalised this as a five-way taxonomy, released \conflicts, a benchmark of 458 search
 queries annotated by experts with their conflict type, and showed that giving a generator the gold type raises
-the share of responses with the expected behaviour by about 24 points. The bottleneck is the type itself: the best
-LLM they tested, Gemini~2.5 Flash, predicted it with 65.3\% accuracy.
+the share of responses with the expected behaviour by about 24 points. Predicting the type is harder: the best LLM
+they tested, Gemini~2.5 Flash, reached 65.3\% accuracy.
 
-Conflict typing is a decision, not a generation task. It is made once per query, before the answer is written, and
-its output is one of five labels. A classifier for it should therefore be fast enough to sit in front of every
+Conflict typing is a classification problem. It is made once per query, before the answer is written, and its
+output is one of five labels. A classifier for it should therefore be fast enough to sit in front of every
 search-augmented request, cheap enough to run on all of them, and calibrated enough that its uncertainty can be
-acted on. These are exactly the properties claimed for a new class of \emph{typed decision models}, which take
+acted on. A recent class of models, \emph{typed decision models}, is designed for this setting: they take
 unstructured context and typed questions and return probabilities over the allowed answers in a single forward
-pass, without generating text \citep{typesafe2026jev}. \jev, the first such model, has been evaluated broadly on
-classification, NLI and judging benchmarks \citep{deusser2026jev,li2026specialized,duan2026general}, but never on
-deciding why retrieved sources conflict, a task that requires reading many documents at once and reasoning about
-their mutual relation rather than about one text.
+pass, without generating text \citep{typesafe2026jev}. Since the first such model, several
+providers have released their own, and one inference gateway now serves \ndm of them behind a common interface. Existing
+evaluations cover classification, NLI and judging benchmarks, mostly for a single model
+\citep{deusser2026jev,li2026specialized,duan2026general}, but none covers deciding why retrieved sources conflict,
+a task that requires reading many documents at once and reasoning about their mutual relation rather than about
+one text.
 
-We ask whether \jev can serve as this decision layer. We make four contributions.
+\begin{figure}[t]
+\centering
+\input{figures/overview}
+\caption{Overview. A decision model types the conflict among a query's search results in one forward pass; in a
+cascade, its least confident fraction $f$ of queries is typed by an LLM instead. End to end, a generator answers
+given the predicted type, and a judge checks the answer against the expected behaviour of the gold type.}
+\label{fig:overview}
+\end{figure}
 
-\paragraph{(1) A faithful evaluation of \jev on conflict typing.} We evaluate \jev on \conflicts under the
-original paper's protocol: the same input representation, the same category definitions and examples taken
-verbatim from the paper's source, and Gemini rerun on identical inputs so that every comparison is paired. Asked
-directly, \jev is statistically tied with the paper's model, Gemini~2.5 Flash (\jevacc\% vs.\ \gtwofiveacc\%), at
-\costratiotwofive$\times$ lower cost and \latratiotwofive$\times$ lower latency (\S\ref{sec:main}). It trails the
-current Gemini~3.8 Flash by \jevvsthreeeightdiffabs points, and among five decision models it is mid-pack in
-accuracy and the fastest.
+Can decision models, as a class, serve as this decision layer? And if only some can, what sets them apart? Our
+study (Figure~\ref{fig:overview}) makes five contributions.
 
-\paragraph{(2) A formulation study.} Decision models invite decomposing a taxonomy into simple yes/no questions.
-We find that this fails for conflict typing (\treeoneacc\%) because \jev answers \emph{yes} too readily; a
-reordered tree chosen on development data repairs it for \jev but does not transfer to other decision models,
-leaving the direct question as the robust format (\S\ref{sec:formulation}).
+\paragraph{(1) A census of decision models on conflict typing.} We evaluate every decision model served by one
+commercial gateway (\ndm models from \nproviders providers) on \conflicts under the original paper's protocol: the
+same input representation, the same category definitions and examples taken verbatim from the paper's source, and
+Gemini rerun on identical inputs so that every comparison is paired (\S\ref{sec:main}). \natpar of the \ndm
+models match or exceed the paper's LLM at a fraction of its cost and latency; the current Gemini~3.8 Flash is
+significantly more accurate than \nworsenow of them.
 
-\paragraph{(3) A cost-quality cascade.} Because \jev's confidence predicts its own errors, sending its least
-certain queries to an LLM is effective: escalating a quarter of the queries to Gemini~3.8 Flash reaches
-\cascflattfacc\% against the LLM's \gthreeeightacc\% ($p\cascflattfp$) at \cascflattfcost\% of the LLM's cost
+\paragraph{(2) A formulation study.} Decomposing the taxonomy into yes/no questions lowers accuracy for all \ndm
+models, and a repair fitted on one model helps none, leaving the direct question as the reliable format
+(\S\ref{sec:formulation}).
+
+\paragraph{(3) Cost-quality cascades.} Decision models' confidence ranks their own errors, so sending their least
+certain queries to an LLM is effective: with a quarter of the queries escalated to Gemini~3.8 Flash, \ncasctied of
+the \ndm cascades are statistically tied with the LLM alone at \casctiedcostmin--\casctiedcostmax\% of its cost
 (\S\ref{sec:cascade}).
 
-\paragraph{(4) Pre-specified diagnostics.} We test three hypotheses about how \jev reads conflicting sources
-(\S\ref{sec:diagnostics}). \jev's documented weakness at ordering dates \citep{typesafe2026jagged} does not affect
-this task: no system's accuracy changes when dates are removed or when recency is computed in code, and \jev
-recognises outdated sources from their content as well as the LLM does. \jev is as sensitive to source order as
-the LLM, and when one source is rewritten to contradict the others, it separates the corrupted from the clean
-version of a query exactly as well as Gemini~3.8 Flash.
+\paragraph{(4) Pre-specified diagnostics.} We test whether decision models depend on publication dates,
+are sensitive to source order, or miss a single false source among agreeing ones (\S\ref{sec:diagnostics}). Dates
+play no measurable role, order sensitivity varies from model to model, and a planted false source shows in the
+probabilities more than in the top answer.
 
-Every setting was fixed on a development split before the test runs, and every later addition (a newer LLM, a
-newer \jev version, other decision models, the diagnostics) was specified in writing before it was run. We release
-the code, prompts, splits and all model outputs\releasenote.
+\paragraph{(5) An end-to-end test.} Given to a generator, the types of \eentied of the \ndm decision models yield
+answers that follow the expected behaviour as often as with the LLM's types, under both judges we specified
+(\S\ref{sec:endtoend}).
+
+Every setting and every later addition was fixed in writing before it was run (\S\ref{sec:setup}). We release the
+code, prompts, splits and all model outputs\releasenote.

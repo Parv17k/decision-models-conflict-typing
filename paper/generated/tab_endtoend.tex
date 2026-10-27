@@ -1,0 +1,30 @@
+\begin{table*}[t]
+\centering\small\setlength{\tabcolsep}{4.5pt}
+\fitwidth{\begin{tabular}{lcccccccc}
+\toprule
+ & \multicolumn{2}{c}{Type predictor} & \multicolumn{2}{c}{Judge: Gemini 2.5} & \multicolumn{2}{c}{Judge: Gemini 3.8} & \multicolumn{2}{c}{25\% to Gemini 3.8$^\dagger$} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
+Type given to the generator & Acc. & \$ / 1k & Adh. & $\Delta$ ($p$) & Adh. & $\Delta$ ($p$) & Adh. & $\Delta$ ($p$) \\
+\midrule
+Vanilla (no type) & -- & -- & 87.9 & $-$3.7 (0.032) & 91.1 & +1.5 (0.47) & & \\
+Gemini 2.5 Flash, thinking off$^\ast$ & 61.3 & 1.66 & 91.6 & -- & 89.7 & -- & & \\
+\midrule
+Gemini 3.8 Flash, thinking low & 70.0 & 3.65 & 92.1 & +0.5 (0.81) & 90.6 & +1.0 (0.52) & & \\
+Liquid d1 Ultra & 67.0 & 0.18 & 91.4 & $-$0.2 (1.00) & 88.4 & $-$1.2 (0.42) & 92.1 & +0.5 (0.81) \\
+Perplexity v1.2 & 66.7 & 0.09 & 91.4 & $-$0.2 (1.00) & 88.2 & $-$1.5 (0.34) & 92.4 & +0.7 (0.65) \\
+GPT-6 Luna & 66.3 & 0.41 & 88.9 & $-$2.7 (0.052) & 89.7 & +0.0 (1.00) & 90.6 & $-$1.0 (0.56) \\
+Mammoth-1 & 65.8 & 0$^\P$ & 91.1 & $-$0.5 (0.84) & 88.9 & $-$0.7 (0.70) & 91.4 & $-$0.2 (1.00) \\
+Elephant-1 & 65.3 & 0$^\P$ & 90.6 & $-$1.0 (0.54) & 89.9 & +0.2 (1.00) & 91.1 & $-$0.5 (0.83) \\
+Liquid d1 & 62.6 & 0.08 & 90.6 & $-$1.0 (0.54) & 89.9 & +0.2 (1.00) & 91.9 & +0.2 (1.00) \\
+Jev 1.13 & 61.8 & 0.19 & 91.4 & $-$0.2 (1.00) & 90.1 & +0.5 (0.84) & 92.4 & +0.7 (0.65) \\
+Perplexity Flash v1.2 & 61.8 & 0.04 & 90.1 & $-$1.5 (0.24) & 89.9 & +0.2 (1.00) & 90.6 & $-$1.0 (0.50) \\
+Jev 1.14 & 59.6 & 0.19 & 92.4 & +0.7 (0.66) & 90.1 & +0.5 (0.84) & 92.4 & +0.7 (0.63) \\
+Microsoft D-1 & 58.1 & 0.18 & 91.9 & +0.2 (1.00) & 91.1 & +1.5 (0.29) & 92.4 & +0.7 (0.68) \\
+ScaleDown C-1$^\S$ & 50.0 & 0.24 & 87.7 & $-$3.9 (0.011) & 87.9 & $-$1.7 (0.36) & 90.6 & $-$1.0 (0.56) \\
+\midrule
+Gold type (Oracle) & 100 & -- & 95.3 & +3.7 (0.011) & 96.8 & +7.1 ({<}0.001) & & \\
+\bottomrule
+\end{tabular}}
+\caption{End to end on the test split ($n=406$): Gemini~2.5 Flash answers given the type from the first column (the Pipeline of \citet{cattan2025dragged}). Acc.: type accuracy (\%). \$ / 1k: classification cost per 1,000 queries. Adh.: answers following the gold type's expected behaviour (\%), per LLM judge. $\Delta$: points from the original setup$^\ast$ (exact McNemar $p$). $^\dagger$Cascade of Table~\ref{tab:cascade}, primary judge. $^\S$Single text field (Table~\ref{tab:main}). $^\P$Billed \$0.}
+\label{tab:endtoend}
+\end{table*}

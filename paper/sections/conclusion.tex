@@ -1,20 +1,18 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-We evaluated the typed decision model \jev as a classifier of knowledge-conflict types among retrieved sources,
-under the protocol of the benchmark's authors and against LLMs on identical inputs. Asked directly, \jev matches the
-accuracy of the LLM used in the original study at a fraction of its cost and latency, and it is the fastest system
-we tested. It trails the current LLM, but a confidence-gated cascade recovers most of that gap at under a third of
-the LLM's cost. Decomposing the task into yes/no questions does not work reliably, and pre-specified diagnostics
-show that \jev's known weaknesses with dates and context do not translate into specific failures on this task.
-Future work should test whether \jev's predicted types, and its probabilities over them, improve the answers of
-search-augmented systems end to end, and whether its confidence can steer a generator between expected behaviours
-when the type is uncertain.
+We tested every typed decision model hosted on one gateway as a classifier of knowledge-conflict types, using
+the benchmark authors' protocol and the same inputs as the LLMs. Most match the LLM of the original study. They do
+so at a small fraction of its cost and latency. They trail the
+current LLM, but for most of them a confidence-gated cascade recovers that gap at a quarter to a third of the LLM's
+cost, and given to a generator, their types yield answers that follow the expected behaviour as often as the LLM's.
+ Future work should measure the gain from predicted types with judges that see the
+sources, and test whether a decision model's probabilities can steer a generator between expected behaviours when
+the type is uncertain.
 
 \section*{Ethics and Broader Impact}
 
-The planted-misinformation variant rewrites one retrieved page per query to state a wrong answer. It is built from
-public data, contains only factual substitutions on non-sensitive questions, and is released with clear labels for
-research on detection. All queries in \conflicts are safe by construction \citep{cattan2025dragged}. Faster and
-cheaper conflict classification could be used to suppress minority viewpoints if \emph{Conflicting opinions} were
-treated as an error; the taxonomy's expected behaviour for that type is to present all viewpoints.
+The planted-misinformation variant rewrites one retrieved page per query to state a wrong answer. It uses public data and factual substitutions on
+non-sensitive questions, and is released with clear labels. All queries in \conflicts are safe by construction \citep{cattan2025dragged}. Cheap conflict
+classification could be misused to suppress minority viewpoints; the expected behaviour for \emph{Conflicting
+opinions} is to present all of them.

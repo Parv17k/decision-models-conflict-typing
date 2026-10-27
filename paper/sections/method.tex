@@ -1,4 +1,4 @@
-\section{Conflict Typing with a Decision Model}
+\section{Conflict Typing with Decision Models}
 \label{sec:method}
 
 A typed decision model receives a \emph{state}, here the query and its numbered search results, and one or more
@@ -18,13 +18,15 @@ changed?), and \emph{misinformation} (are some results incorrect?). The five pro
 a distribution over the categories. \textbf{Tree v1} follows the taxonomy's order: $P(\textit{No conflict}) =
 1-d$, $P(\textit{Complementary}) = d\,c$, and the remaining mass $d(1-c)$ is split over the three causes in
 proportion to their yes-probabilities, where $d$ and $c$ are the probabilities of \emph{differ} and
-\emph{compatible}. \textbf{Tree v2}, chosen after inspecting v1 on the development split (\S\ref{sec:formulation}),
+\emph{compatible}. \textbf{Tree v2}, chosen after inspecting \jev~1.13's v1 answers on the development split (\S\ref{sec:formulation}),
 asks \emph{opinion} before \emph{compatible} and treats \emph{misinformation} as the factual conflict not explained
 by time: $P(\textit{Opinions}) = d\,o$, $P(\textit{Complementary}) = d(1-o)c$, $P(\textit{Outdated}) =
 d(1-o)(1-c)\,t$ and $P(\textit{Misinformation}) = d(1-o)(1-c)(1-t)$, with $o$ and $t$ the probabilities of
-\emph{opinion} and \emph{outdated}. Both trees use the same five answers, so v2 costs nothing extra.
+\emph{opinion} and \emph{outdated}. Both trees use the same five answers, so v2 costs nothing extra. Every decision model receives exactly the same
+questions and combination rules; nothing is tuned per model.
 
-\paragraph{Cascade.} \jev answers every query. The fraction $f$ of queries with the lowest \jev confidence is sent
-to an LLM, whose answer replaces \jev's. The threshold is a quantile of \jev's confidences and uses no labels, so the
+\paragraph{Cascade.} The decision model answers every query. The fraction $f$ of queries with its lowest confidence
+is sent to an LLM, whose answer replaces the decision model's. The threshold is a quantile of the decision model's
+confidences and uses no labels, so the
 whole accuracy--cost curve can be computed on the test split without leakage; we fixed $f=25\%$ and $f=50\%$ as the
 reported operating points before computing any cascade.

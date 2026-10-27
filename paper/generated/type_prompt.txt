@@ -1,0 +1,7 @@
+Write a high-quality and concise answer for the given question using only the provided search results.
+For each sentence, cite the corresponding sources using [1][2][3].
+
+TYPE OF KNOWLEDGE CONFLICT IN THE SEARCH RESULTS: {description}
+
+QUERY: {query}
+SEARCH RESULTS: {search_results}

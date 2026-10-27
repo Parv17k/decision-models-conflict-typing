@@ -14,20 +14,22 @@ detector that sends an embedding classifier's uncertain cases to an LLM \citep{w
 uses a typed decision model.
 
 \paragraph{Typed decision models.}
-\jev \citep{typesafe2026jev} answers typed questions (choice, score, yes/no) over a supplied state with
-probabilities over the allowed answers, trained for calibration rather than generation. Independent evaluations
-find it competitive with frontier LLMs on knowledge, classification and NLI benchmarks at a fraction of the cost
-\citep{deusser2026jev,li2026specialized}, well calibrated on choice questions but biased towards \emph{yes} when
-many yes/no questions share a request \citep{deusser2026jev,li2026llm2jev}, not always coherent across logically
-related questions \citep{li2026beyond}, weaker as inputs grow long \citep{duan2026general}, and vulnerable to
-natural-looking context that flips its decisions \citep{xu2026jevout}. As a judge, it is cheaper than LLMs but
-shares their most confident errors \citep{rao2026rubric}, and a confidence-gated cascade to an LLM can match the
-LLM at lower cost \citep{li2026jevjudge}. Closest to our setting, \citet{huang2026radiology} use \jev to decide
-whether one report supports or contradicts another. No prior work evaluates a decision model on typing the
-conflict among many retrieved sources.
+A typed decision model answers typed questions (choice, score, yes/no) over a supplied state with probabilities
+over the allowed answers, trained for calibration rather than generation. The class was introduced with \jev
+\citep{typesafe2026jev}, and hosted and open-weight alternatives followed; open reimplementations have been
+benchmarked against the hosted reference \citep{weng2026ownjev}. Independent evaluations, so far mostly of the
+first model, find decision models competitive with frontier LLMs on knowledge, classification and NLI benchmarks at
+a fraction of the cost \citep{deusser2026jev,li2026specialized}, calibrated on choice questions but biased towards
+\emph{yes} when many yes/no questions share a request \citep{deusser2026jev,li2026llm2jev}, not always coherent
+across logically related questions \citep{li2026beyond}, weaker as inputs grow long \citep{duan2026general}, and
+vulnerable to natural-looking context that flips their decisions \citep{xu2026jevout}. As judges, they are cheaper
+than LLMs but share their most confident errors \citep{rao2026rubric}, and a confidence-gated cascade to an LLM can
+match the LLM at lower cost \citep{li2026jevjudge}. Closest to our setting, \citet{huang2026radiology} use a decision
+model to decide whether one report supports or contradicts another. \citet{duan2026general} compare several decision
+models on general benchmarks; no prior work compares them on typing the conflict among many retrieved sources.
 
 \paragraph{Cascades and selective prediction.}
 Routing easy inputs to a cheap model and hard ones to an expensive model is an established way to trade cost for
 quality \citep{chen2023frugalgpt}; its effectiveness depends on how well the cheap model's confidence ranks its own
 errors, the quantity studied in selective classification \citep{geifman2017selective}. We measure this directly
-for \jev on conflict typing and compare against random escalation.
+for every decision model on conflict typing and compare against random escalation.

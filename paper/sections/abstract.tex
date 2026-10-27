@@ -1,16 +1,19 @@
 When the sources retrieved for a query disagree, the right response depends on \emph{why} they disagree: a
 question with several valid answers, a contested topic, stale information and a false source each call for
 different behaviour. \citet{cattan2025dragged} showed that telling a generator the conflict type improves its
-responses by about 24 points, but that predicting the type is hard even for frontier LLMs. We study whether a
-\emph{typed decision model}, which returns calibrated probabilities over fixed options in a single forward pass
-instead of generating text, can do this classification fast and cheaply. Using the \conflicts benchmark and the
-original paper's prompt verbatim, we evaluate the decision model \jev against Gemini models on identical inputs.
-Asked directly, \jev reaches \jevacc\% accuracy, statistically tied with Gemini~2.5 Flash, the paper's model
-(\gtwofiveacc\%, $p\jevvstwofivep$), at \costratiotwofive$\times$ lower cost and \latratiotwofive$\times$ lower
-latency, and it is the fastest of the \nconfigs model configurations we test. It trails the current Gemini~3.8 Flash by
-\jevvsthreeeightdiffabs points; a confidence-gated cascade that sends \jev's least certain quarter of queries to that
-LLM recovers most of the gap (\cascflattfacc\% vs.\ \gthreeeightacc\%, $p\cascflattfp$) at \cascflattfcost\% of
-its cost. Decomposing the taxonomy into yes/no questions fails (\treeoneacc\%) because of a yes-bias, and a repair
-chosen on development data does not transfer to other decision models. Pre-specified diagnostics show that
-\jev's documented weakness with dates does not matter for this task, and that its sensitivity to source order and
-its ability to notice a planted false source match the LLM's. We release code, prompts and all model outputs\releasenote.
+responses by about 24 points, but that predicting the type is hard even for frontier LLMs. We study whether
+\emph{typed decision models}, which return probabilities over fixed options in a single forward pass instead of
+generating text, can do this classification fast and cheaply. Using the \conflicts benchmark and the original
+paper's prompt verbatim, we evaluate all \ndm decision models served by one commercial inference gateway, from
+\nproviders providers, against Gemini models on identical inputs. Asked directly, the decision models reach
+\dmaccmin--\dmaccmax\% accuracy; \natpar of the \ndm match or exceed Gemini~2.5 Flash, the paper's model
+(\gtwofiveacc\%), at \costratiorefmin--\costratiorefmax$\times$ lower billed cost (\nfree were free) and
+\latratiorefmin--\latratiorefmax$\times$ lower latency. The current Gemini~3.8 Flash (\gthreeeightacc\%) is significantly more accurate than \nworsenow of
+them, but sending each decision model's least confident quarter of queries to it gives a cascade statistically tied
+with it for \ncasctied of the \ndm, at \casctiedcostmin--\casctiedcostmax\% of its cost. End to end, answers
+generated with the types of \eentied of the \ndm follow the expected behaviour as often as with the LLM's types. Decomposing the taxonomy into yes/no questions lowers
+accuracy for every model, and a repair fitted on one model does not transfer. Pre-specified diagnostics show that
+dates play no measurable role and that sensitivity to source order varies widely between models. Decision models
+detect a planted false source less reliably than the LLM as hard labels, but their probabilities still separate
+planted from clean sources. We release code, prompts and
+all model outputs\releasenote.
