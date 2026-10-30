@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+message: "If you use this code or these outputs, please cite the paper."
+title: "Do We Need an LLM to Know Why Sources Conflict? Decision Models for Knowledge-Conflict Typing in RAG"
+authors:
+  - family-names: Khatri
+    given-names: Parv
+  - family-names: Jain
+    given-names: Harshul
+  - family-names: Kapoor
+    given-names: Mehak
+  - family-names: Sah
+    given-names: Tanya
+license: Apache-2.0
+repository-code: "https://github.com/Parv17k/decision-models-conflict-typing"
+url: "https://arxiv.org/abs/2610.36915"
+preferred-citation:
+  type: article
+  title: "Do We Need an LLM to Know Why Sources Conflict? Decision Models for Knowledge-Conflict Typing in RAG"
+  authors:
+    - family-names: Khatri
+      given-names: Parv
+    - family-names: Jain
+      given-names: Harshul
+    - family-names: Kapoor
+      given-names: Mehak
+    - family-names: Sah
+      given-names: Tanya
+  year: 2026
+  month: 10
+  journal: "arXiv preprint"
+  identifiers:
+    - type: other
+      value: "arXiv:2610.36915"
+  doi: "10.48550/arXiv.2610.36915"
+  url: "https://arxiv.org/abs/2610.36915"
