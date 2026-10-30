@@ -1,7 +1,7 @@
 # Do We Need an LLM to Know Why Sources Conflict?
 
 Code, prompts and all model outputs for *Do We Need an LLM to Know Why Sources Conflict? Decision Models for Knowledge-Conflict Typing in RAG*
-(Parv Khatri, Harshul Jain, Mehak Kapoor, Tanya Sah).
+(Parv Khatri, Harshul Jain, Mehak Kapoor, Tanya Sah), [arXiv:2610.36915](https://arxiv.org/abs/2610.36915).
 
 We evaluate every typed decision model served by one inference gateway (11 models from 7 providers) as a
 classifier of knowledge-conflict types among retrieved sources on CONFLICTS
@@ -88,9 +88,13 @@ It is not redistributed here; `scripts/download_data.sh` fetches it and verifies
 
 ```bibtex
 @misc{khatri2026needllm,
-  title  = {Do We Need an {LLM} to Know Why Sources Conflict? Decision Models for Knowledge-Conflict Typing in {RAG}},
-  author = {Khatri, Parv and Jain, Harshul and Kapoor, Mehak and Sah, Tanya},
-  year   = {2026},
-  note   = {arXiv identifier to be added}
+  title         = {Do We Need an {LLM} to Know Why Sources Conflict? Decision Models for Knowledge-Conflict Typing in {RAG}},
+  author        = {Khatri, Parv and Jain, Harshul and Kapoor, Mehak and Sah, Tanya},
+  year          = {2026},
+  eprint        = {2610.36915},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  doi           = {10.48550/arXiv.2610.36915},
+  url           = {https://arxiv.org/abs/2610.36915}
 }
 ```
